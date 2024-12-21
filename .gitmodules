@@ -1,0 +1,3 @@
+[submodule "source/cortex-m0/raspberry/pico-sdk"]
+	path = source/cortex-m0/raspberry/pico-sdk
+	url = https://github.com/raspberrypi/pico-sdk.git

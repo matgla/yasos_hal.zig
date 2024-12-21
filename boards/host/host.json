@@ -1,0 +1,6 @@
+{
+  "mcu": "mcu/host",
+  "linker_script": "",
+  "bundle_compiler_rt": true,
+  "entry": ""
+}
