@@ -12,10 +12,10 @@ pub fn build(b: *std.Build) !void {
         .board = board,
         .root_file = @as([]const u8, b.pathFromRoot("hello_uart.zig")),
         .optimize = optimize,
-        .name = @as([]const u8, "hello_uart_from_hal"),
+        .name = @as([]const u8, "hello_uart"),
         .cmake = cmake,
         .gcc = gcc,
     });
-    b.installArtifact(boardDep.artifact("hello_uart_from_hal"));
+    b.installArtifact(boardDep.artifact("hello_uart"));
     _ = boardDep.module("board");
 }
