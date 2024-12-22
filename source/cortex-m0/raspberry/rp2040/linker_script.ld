@@ -1,5 +1,3 @@
-ENTRY(_crt_init);
-
 MEMORY {
   FLASH(rx) : ORIGIN = 0x10000100, LENGTH = 128K
   SRAM(rwx) : ORIGIN = 0x20041f00, LENGTH = 20K

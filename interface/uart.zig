@@ -1,1 +1,0 @@
-pub fn Uart() type {}

@@ -1,5 +1,5 @@
 //
-// host.zig
+// build.zig.zon
 //
 // Copyright (C) 2024 Mateusz Stadnik <matgla@live.com>
 //
@@ -18,4 +18,15 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-pub const Uart = @import("uart.zig").Uart;
+
+.{
+  .name = "toolchains",
+  .version = "0.0.0",
+  .dependencies = .{
+  },
+  .paths = .{
+    "build.zig",
+    "build.zig.zon",
+    "arm_none_eabi_toolchain.zig"
+  }
+}

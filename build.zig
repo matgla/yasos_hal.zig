@@ -1,3 +1,23 @@
+//
+// build.zig
+//
+// Copyright (C) 2024 Mateusz Stadnik <matgla@live.com>
+//
+// This program is free software: you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation, either version
+// 3 of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be
+// useful, but WITHOUT ANY WARRANTY; without even the implied
+// warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+// PURPOSE. See the GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General
+// Public License along with this program. If not, see
+// <https://www.gnu.org/licenses/>.
+//
+
 const std = @import("std");
 const buildin = @import("builtin");
 
@@ -33,15 +53,18 @@ pub fn build(b: *std.Build) !void {
     const board = b.option([]const u8, "board", "a board for which the HAL is used") orelse "host";
     const execName = b.option([]const u8, "name", "application name for which HAL is used") orelse unreachable;
     const root_file = b.option(std.Build.LazyPath, "root_file", "application root file") orelse unreachable;
+    const cmake = b.option([]const u8, "cmake", "path to CMake executable") orelse "";
+    const gcc = b.option([]const u8, "gcc", "path to arm-none-eabi-gcc executable") orelse "";
+
     const optimize = b.standardOptimizeOption(.{});
     std.log.info("Used board - {s}", .{board});
 
     const builder = Builder{};
-    try builder.configureBoard(b, @as([]const u8, board), @as([]const u8, execName), root_file, optimize);
+    try builder.configureBoard(b, @as([]const u8, board), @as([]const u8, execName), root_file, optimize, @as([]const u8, cmake), @as([]const u8, gcc));
 }
 
 pub const Builder = struct {
-    pub fn configureBoard(_: *const Builder, b: *std.Build, board: []const u8, execName: []const u8, root_file: std.Build.LazyPath, optimize: std.builtin.OptimizeMode) !void {
+    pub fn configureBoard(_: *const Builder, b: *std.Build, board: []const u8, execName: []const u8, root_file: std.Build.LazyPath, optimize: std.builtin.OptimizeMode, cmake: []const u8, gcc: []const u8) !void {
         const boardDependency = try std.fmt.allocPrint(b.allocator, "boards/{s}/{s}.zig", .{ board, board });
         defer b.allocator.free(boardDependency);
 
@@ -50,7 +73,10 @@ pub const Builder = struct {
 
         const halDependency = try std.fmt.allocPrint(b.allocator, "{s}", .{boardConfig.data.mcu});
         defer b.allocator.free(halDependency);
-        const mcu = b.dependency(halDependency, .{});
+        const mcu = b.dependency(halDependency, .{
+            .cmake = cmake,
+            .gcc = gcc,
+        });
         const boardModule = b.addModule("board", .{
             .root_source_file = b.path(boardDependency),
         });
@@ -86,7 +112,7 @@ pub const Builder = struct {
         const configPath = try std.fmt.allocPrint(b.allocator, "boards/{s}/{s}.json", .{ board, board });
         defer b.allocator.free(configPath);
 
-        std.debug.print("Opening file: {s}\n", .{configPath});
+        std.log.info("Opening file: {s}", .{configPath});
         const file = try std.fs.cwd().openFile(b.pathFromRoot(configPath), .{});
         defer file.close();
 

@@ -1,5 +1,5 @@
 //
-// host.zig
+// build.zig
 //
 // Copyright (C) 2024 Mateusz Stadnik <matgla@live.com>
 //
@@ -18,4 +18,8 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-pub const Uart = @import("uart.zig").Uart;
+const std = @import("std");
+
+pub const arm_none_eabi_toolchain = @import("arm_none_eabi_toolchain.zig");
+
+pub fn build(_: *std.Build) !void {}
