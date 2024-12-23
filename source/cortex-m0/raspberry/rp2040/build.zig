@@ -130,3 +130,13 @@ pub fn build(b: *std.Build) !void {
     hal.linkLibrary(system_stubs);
     system_stubs.addSystemIncludePath(.{ .cwd_relative = b.fmt("{s}/include", .{sysroot}) });
 }
+
+const FlashType = union(enum) {
+    w25q080,
+};
+
+fn compile_bootrom(b: *std.Build, flash: FlashType) std.Build.LazyPath {
+    const bootloader_exe = b.addExecutable(.{
+        .name = "stage2-bootloader"
+    })
+}
