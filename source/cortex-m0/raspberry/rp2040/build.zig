@@ -119,6 +119,7 @@ pub fn build(b: *std.Build) !void {
     hal.addAssemblyFile(b.path("../pico-sdk/src/rp2_common/hardware_irq/irq_handler_chain.S"));
     hal.addAssemblyFile(b.path("../pico-sdk/src/rp2_common/pico_divider/divider_hardware.S"));
     hal.addAssemblyFile(b.path("vector_table.S"));
+    hal.addAssemblyFile(b.path("boot_w25q080.S"));
 
     const system_stubs = b.addStaticLibrary(.{
         .name = "hal",
@@ -129,14 +130,23 @@ pub fn build(b: *std.Build) !void {
 
     hal.linkLibrary(system_stubs);
     system_stubs.addSystemIncludePath(.{ .cwd_relative = b.fmt("{s}/include", .{sysroot}) });
+
+    const boot2_binary = prepare_bootloader(b);
+    const boot2_module = b.createModule(
+        .{ .root_source_file = boot2_binary },
+    );
+    hal.addImport("rp2040_boot2_binary", boot2_module);
 }
 
-const FlashType = union(enum) {
-    w25q080,
-};
-
-fn compile_bootrom(b: *std.Build, flash: FlashType) std.Build.LazyPath {
-    const bootloader_exe = b.addExecutable(.{
-        .name = "stage2-bootloader"
-    })
+fn prepare_bootloader(b: *std.Build) std.Build.LazyPath {
+    const bootloader = b.addExecutable(.{
+        .name = "stage2-bootloader",
+        .optimize = .ReleaseSmall,
+        .target = b.resolveTargetQuery(targetOptions),
+        .root_source_file = null,
+    });
+    bootloader.setLinkerScript(b.path("bootloader_stage2/memory.ld"));
+    bootloader.addAssemblyFile(b.path("boot_w25q080.S"));
+    const bootloader_objcopy = b.addObjCopy(bootloader.getEmittedBin(), .{ .basename = "stage2_w25q080.bin", .format = .bin });
+    return bootloader_objcopy.getOutput();
 }

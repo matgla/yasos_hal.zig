@@ -20,6 +20,7 @@
 
 const c = @cImport({
     @cInclude("sys/types.h");
+    @cInclude("sys/stat.h");
 });
 
 export fn _exit(_: c_int) void {
@@ -32,6 +33,47 @@ export fn _kill(_: c.pid_t, _: c_int) c.pid_t {
 
 export fn _getpid() c.pid_t {
     return 0;
+}
+
+export fn __unhandled_user_irq() void {
+    while (true) {}
+}
+
+export fn panic(_: *const c_char, ...) void {
+    while (true) {}
+}
+
+export fn _fstat(_: c_int, _: *c.struct_stat) c_int {
+    return 0;
+}
+
+export fn _isatty(_: c_int) c_int {
+    return 0;
+}
+
+export fn _close(_: c_int) c_int {
+    return 0;
+}
+
+export fn _lseek(_: c_int, _: c.off_t, _: c_int) c_int {
+    return 0;
+}
+
+export fn _read(_: c_int, _: *void, _: usize) isize {
+    return 0;
+}
+
+export fn _write(_: c_int, _: *const void, _: usize) isize {
+    return 0;
+}
+
+export fn _open(_: *const c_char, _: c_int) c_int {
+    return 0;
+}
+
+export fn _sbrk(_: isize) *void {
+    var buf: [10]u8 = undefined;
+    return @ptrCast(buf[0..10].ptr);
 }
 
 export fn system_init() void {}

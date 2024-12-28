@@ -19,3 +19,7 @@
 //
 
 pub const Uart = @import("uart.zig").Uart;
+
+comptime {
+    _ = @import("boot2_rom.zig");
+}

@@ -52,7 +52,7 @@ pub fn build(b: *std.Build) !void {
     // build system dependency
     const board = b.option([]const u8, "board", "a board for which the HAL is used") orelse "host";
     const execName = b.option([]const u8, "name", "application name for which HAL is used") orelse unreachable;
-    const root_file = b.option(std.Build.LazyPath, "root_file", "application root file") orelse unreachable;
+    const root_file = b.option([]const u8, "root_file", "application root file") orelse unreachable;
     const cmake = b.option([]const u8, "cmake", "path to CMake executable") orelse "";
     const gcc = b.option([]const u8, "gcc", "path to arm-none-eabi-gcc executable") orelse "";
 
@@ -64,7 +64,7 @@ pub fn build(b: *std.Build) !void {
 }
 
 pub const Builder = struct {
-    pub fn configureBoard(_: *const Builder, b: *std.Build, board: []const u8, execName: []const u8, root_file: std.Build.LazyPath, optimize: std.builtin.OptimizeMode, cmake: []const u8, gcc: []const u8) !void {
+    pub fn configureBoard(_: *const Builder, b: *std.Build, board: []const u8, execName: []const u8, root_file: []const u8, optimize: std.builtin.OptimizeMode, cmake: []const u8, gcc: []const u8) !void {
         const boardDependency = try std.fmt.allocPrint(b.allocator, "boards/{s}/{s}.zig", .{ board, board });
         defer b.allocator.free(boardDependency);
 
@@ -81,11 +81,12 @@ pub const Builder = struct {
             .root_source_file = b.path(boardDependency),
         });
         boardModule.addImport("hal", mcu.module("hal"));
+        const root_path = std.Build.LazyPath{ .src_path = .{ .sub_path = root_file, .owner = b } };
 
         if (mcu.module("hal").resolved_target) |target| {
             const exe = b.addExecutable(.{
                 .name = execName,
-                .root_source_file = root_file,
+                .root_source_file = root_path,
                 .target = target,
                 .optimize = optimize,
             });

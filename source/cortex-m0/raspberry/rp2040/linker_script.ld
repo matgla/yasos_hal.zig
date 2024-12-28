@@ -1,5 +1,5 @@
 MEMORY {
-  FLASH(rx) : ORIGIN = 0x10000100, LENGTH = 128K
+  FLASH(rx) : ORIGIN = 0x10000000, LENGTH = 128K
   SRAM(rwx) : ORIGIN = 0x20041f00, LENGTH = 20K
 }
 
@@ -7,6 +7,15 @@ __heap_size__ = 0x1000;
 
 SECTIONS
 {
+  .boot2 : {
+    __boot2_start = .;
+    KEEP(*(.boot2))
+    __boot2_end = .;
+  } > FLASH
+
+  ASSERT(__boot2_end - __boot2_start == 256, 
+    "Pico second stage bootloader must be 256 bytes in size")
+
   .vector_table : 
   {
     . = ALIGN(4);
