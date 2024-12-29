@@ -90,6 +90,7 @@ pub const Builder = struct {
                 .target = target,
                 .optimize = optimize,
             });
+            exe.want_lto = false;
             exe.root_module.addImport("board", boardModule);
             exe.root_module.addImport("hal", mcu.module("hal"));
             if (boardConfig.data.linker_script.len > 0) {

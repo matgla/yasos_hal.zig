@@ -28,6 +28,7 @@
 #include "hardware/regs/addressmap.h"
 #include "hardware/regs/pads_qspi.h"
 #include "hardware/regs/ssi.h"
+#include "hardware/regs/m0plus.h"
 
 .syntax unified 
 .cpu cortex-m0plus
@@ -71,7 +72,7 @@ ssi_register .req r7
 // can be reduced to 2 ? There are some informations in datasheet
 #define FLASH_WAIT_CYCLES 4 
 
-.section .boot2
+.section .text
 .global _start 
 .type _start,%function
 .thumb_func
@@ -177,9 +178,12 @@ reconfigure_ssi_controller_to_remove_command:
 
 /* And now flash should be working in memory mapped mode */ 
 
-  // Let's jump to second part of MBR (from 0x100 to 0x200)
-  ldr r0, =(XIP_BASE + 0x101)
-  bx r0 
+  ldr r0, =(XIP_BASE + 0x100)
+  ldr r1, =(M0PLUS_VTOR_OFFSET)
+  str r0, [r1]
+  ldmia r0, {r0, r1}
+  msr msp, r0
+  bx r1 
 
   /* Software shouldn't exit, but if does go to sleep mode */ 
 loop: 

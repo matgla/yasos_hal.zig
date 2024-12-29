@@ -1,5 +1,5 @@
 //
-// rp2040.zig
+// gpio.zig
 //
 // Copyright (C) 2024 Mateusz Stadnik <matgla@live.com>
 //
@@ -18,9 +18,13 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-pub const Uart = @import("uart.zig").Uart;
+pub const Gpio = struct {
+    id: i32,
 
-comptime {
-    _ = @import("boot2_rom.zig");
-    _ = @import("system_stubs.zig");
-}
+    pub fn init() void {
+        
+    }
+
+    pub fn setFunction()
+};
+

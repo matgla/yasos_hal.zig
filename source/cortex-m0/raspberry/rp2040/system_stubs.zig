@@ -35,10 +35,6 @@ export fn _getpid() c.pid_t {
     return 0;
 }
 
-export fn __unhandled_user_irq() void {
-    while (true) {}
-}
-
 export fn panic(_: *const c_char, ...) void {
     while (true) {}
 }
@@ -77,3 +73,7 @@ export fn _sbrk(_: isize) *void {
 }
 
 export fn system_init() void {}
+
+export fn hard_assertion_failure() void {
+    while (true) {}
+}

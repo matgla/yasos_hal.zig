@@ -21,12 +21,22 @@
 const std = @import("std");
 const uart = @cImport({
     @cInclude("hardware/uart.h");
+    @cInclude("hardware/gpio.h");
 });
 
 pub const Uart = struct {
     fd: i32,
+    initialized: bool,
 
-    pub fn write(_: Uart, _: []const u8) !void {
-        // uart.uart_init(uart.uart0, 115200);
+    pub fn init(_: Uart) void {
+        _ = uart.uart_init(@ptrFromInt(uart.UART0_BASE), 115200);
+        // self.initialized = baudrate != 0;
+        uart.gpio_set_function(0, uart.GPIO_FUNC_UART);
+        uart.gpio_set_function(1, uart.GPIO_FUNC_UART);
+    }
+
+    pub fn write(_: Uart, data: []const u8) !void {
+        uart.uart_write_blocking(@ptrFromInt(uart.UART0_BASE), data.ptr, data.len);
+        uart.uart_tx_wait_blocking(@ptrFromInt(uart.UART0_BASE));
     }
 };

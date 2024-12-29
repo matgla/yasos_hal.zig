@@ -5,7 +5,10 @@ pub const hal = @import("hal");
 
 pub const uart = struct {
     pub const instance = [_]hal.Uart{
-        hal.Uart{ .fd = 0 },
+        hal.Uart{
+            .fd = 0,
+            .initialized = false,
+        },
     };
 
     pub fn hasNum(comptime x: comptime_int) bool {

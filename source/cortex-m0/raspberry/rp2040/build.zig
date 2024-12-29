@@ -58,7 +58,7 @@ fn configureCmake(b: *std.Build, cmake: []const u8) ![]const u8 {
 }
 
 pub fn build(b: *std.Build) !void {
-    const optimize = b.standardOptimizeOption(.{});
+    _ = b.standardOptimizeOption(.{});
     const target = b.resolveTargetQuery(targetOptions);
 
     const cmake = b.option([]const u8, "cmake", "path to CMake executable") orelse "";
@@ -73,7 +73,7 @@ pub fn build(b: *std.Build) !void {
 
     hal.addIncludePath(.{ .cwd_relative = b.pathJoin(&.{ picosdk, "generated/pico_base" }) });
 
-    const sysroot = try toolchain.decorateModuleWithArmToolchain(b, hal, gcc);
+    _ = try toolchain.decorateModuleWithArmToolchain(b, hal, gcc);
 
     hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/hardware_base/include"));
     hal.addIncludePath(b.path("../pico-sdk/src/rp2040/hardware_structs/include"));
@@ -99,6 +99,11 @@ pub fn build(b: *std.Build) !void {
     hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/pico_runtime_init/include"));
     hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/pico_divider/include"));
     hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/hardware_divider/include"));
+    hal.addIncludePath(b.path("../pico-sdk/src/common/pico_binary_info/include"));
+    hal.addIncludePath(b.path("../pico-sdk/src/common/boot_picobin_headers/include"));
+    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/pico_bootrom/include"));
+    hal.addIncludePath(b.path("../pico-sdk/src/common/boot_picoboot_headers/include"));
+    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/boot_bootrom_headers/include"));
 
     hal.addCMacro("PICO_RP2040", "1");
     hal.addCMacro("PICO_DIVIDER_CALL_IDIV0", "0");
@@ -113,23 +118,16 @@ pub fn build(b: *std.Build) !void {
             "../pico-sdk/src/rp2_common/hardware_gpio/gpio.c",
             "../pico-sdk/src/common/hardware_claim/claim.c",
             "../pico-sdk/src/rp2_common/hardware_timer/timer.c",
+            "../pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c",
+            "../pico-sdk/src/rp2_common/pico_runtime/runtime.c",
         },
         .flags = &.{"-std=c23"},
     });
     hal.addAssemblyFile(b.path("../pico-sdk/src/rp2_common/hardware_irq/irq_handler_chain.S"));
     hal.addAssemblyFile(b.path("../pico-sdk/src/rp2_common/pico_divider/divider_hardware.S"));
-    hal.addAssemblyFile(b.path("vector_table.S"));
+    hal.addAssemblyFile(b.path("../pico-sdk/src/rp2_common/pico_crt0/crt0.S"));
+    // hal.addAssemblyFile(b.path("vector_table.S"));
     hal.addAssemblyFile(b.path("boot_w25q080.S"));
-
-    const system_stubs = b.addStaticLibrary(.{
-        .name = "hal",
-        .root_source_file = b.path("system_stubs.zig"),
-        .target = target,
-        .optimize = optimize,
-    });
-
-    hal.linkLibrary(system_stubs);
-    system_stubs.addSystemIncludePath(.{ .cwd_relative = b.fmt("{s}/include", .{sysroot}) });
 
     const boot2_binary = prepare_bootloader(b);
     const boot2_module = b.createModule(
@@ -147,6 +145,7 @@ fn prepare_bootloader(b: *std.Build) std.Build.LazyPath {
     });
     bootloader.setLinkerScript(b.path("bootloader_stage2/memory.ld"));
     bootloader.addAssemblyFile(b.path("boot_w25q080.S"));
+    bootloader.addIncludePath(b.path("../pico-sdk/src/rp2040/hardware_regs/include"));
     const bootloader_objcopy = b.addObjCopy(bootloader.getEmittedBin(), .{ .basename = "stage2_w25q080.bin", .format = .bin });
     return bootloader_objcopy.getOutput();
 }
