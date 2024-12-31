@@ -20,10 +20,18 @@
 
 const std = @import("std");
 
-pub const Uart = struct {
-    fd: i32,
+const interface = @import("hal_interface");
 
-    pub fn write(uart: Uart, data: []const u8) !void {
-        _ = try std.posix.write(uart.fd, data);
-    }
-};
+pub fn Uart(comptime index: usize, comptime _: interface.uart.Pins) type {
+    return struct {
+        const Self = @This();
+        const fd = index;
+
+        pub fn init(_: Self, _: interface.uart.Config) interface.uart.InitializeError!void {}
+
+        pub fn write(_: Self, data: []const u8) !usize {
+            _ = try std.posix.write(fd, data);
+            return data.len;
+        }
+    };
+}

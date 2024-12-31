@@ -58,7 +58,7 @@ fn configureCmake(b: *std.Build, cmake: []const u8) ![]const u8 {
 }
 
 pub fn build(b: *std.Build) !void {
-    _ = b.standardOptimizeOption(.{});
+    const optimize = b.standardOptimizeOption(.{});
     const target = b.resolveTargetQuery(targetOptions);
 
     const cmake = b.option([]const u8, "cmake", "path to CMake executable") orelse "";
@@ -67,12 +67,15 @@ pub fn build(b: *std.Build) !void {
     const hal = b.addModule("hal", .{
         .root_source_file = b.path("rp2040.zig"),
         .target = target,
+        .optimize = optimize,
     });
 
     const picosdk = try configureCmake(b, cmake);
+    const halInterface = b.dependency("hal_interface", .{ .optimize = optimize, .target = target });
+    hal.addImport("hal_interface", halInterface.module("hal_interface"));
 
     hal.addIncludePath(.{ .cwd_relative = b.pathJoin(&.{ picosdk, "generated/pico_base" }) });
-
+    _ = halInterface.module("hal_interface");
     _ = try toolchain.decorateModuleWithArmToolchain(b, hal, gcc);
 
     hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/hardware_base/include"));

@@ -19,19 +19,13 @@
 //
 
 const std = @import("std");
-const builtin = @import("builtin");
 
 pub fn build(b: *std.Build) !void {
     const optimize = b.standardOptimizeOption(.{});
     const target = b.standardTargetOptions(.{});
-    _ = b.option([]const u8, "cmake", "path to CMake executable") orelse "";
-    _ = b.option([]const u8, "gcc", "path to arm-none-eabi-gcc executable") orelse "";
-
-    const hal = b.addModule("hal", .{
-        .root_source_file = b.path("host.zig"),
+    _ = b.addModule("hal_interface", .{
+        .root_source_file = b.path("hal.zig"),
         .target = target,
         .optimize = optimize,
     });
-    const halInterface = b.dependency("hal_interface", .{});
-    hal.addImport("hal_interface", halInterface.module("hal_interface"));
 }

@@ -18,7 +18,11 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-pub const Uart = @import("uart.zig").Uart;
+pub const internal = struct {
+    pub const Uart = @import("uart.zig").Uart;
+};
+
+pub const uart = @import("hal_interface").uart;
 
 comptime {
     _ = @import("boot2_rom.zig");

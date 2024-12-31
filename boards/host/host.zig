@@ -3,13 +3,9 @@ const std = @import("std");
 pub const hal = @import("hal");
 
 pub const uart = struct {
-    pub const instance = [_]hal.Uart{
-        hal.Uart{
-            .fd = std.posix.STDOUT_FILENO,
-        },
-        hal.Uart{
-            .fd = std.posix.STDERR_FILENO,
-        },
+    const StdoutUart = hal.uart.Uart(std.posix.STDOUT_FILENO, .{}, hal.internal.Uart);
+    pub const instance = [_]@TypeOf(StdoutUart.create()){
+        StdoutUart.create(),
     };
 
     pub fn hasNum(comptime x: comptime_int) bool {

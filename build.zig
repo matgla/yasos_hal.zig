@@ -77,13 +77,18 @@ pub const Builder = struct {
             .cmake = cmake,
             .gcc = gcc,
         });
-        const boardModule = b.addModule("board", .{
-            .root_source_file = b.path(boardDependency),
-        });
-        boardModule.addImport("hal", mcu.module("hal"));
+
         const root_path = std.Build.LazyPath{ .src_path = .{ .sub_path = root_file, .owner = b } };
 
         if (mcu.module("hal").resolved_target) |target| {
+            const boardModule = b.addModule("board", .{
+                .root_source_file = b.path(boardDependency),
+                .target = target,
+                .optimize = optimize,
+            });
+            // boardModule.addImport("hal", mcu.module("hal_interface"));
+            boardModule.addImport("hal", mcu.module("hal"));
+
             const exe = b.addExecutable(.{
                 .name = execName,
                 .root_source_file = root_path,
@@ -92,7 +97,7 @@ pub const Builder = struct {
             });
             exe.want_lto = false;
             exe.root_module.addImport("board", boardModule);
-            exe.root_module.addImport("hal", mcu.module("hal"));
+            // exe.root_module.addImport("hal", mcu.module("hal_interface"));
             if (boardConfig.data.linker_script.len > 0) {
                 const linkerScript = try std.fmt.allocPrint(b.allocator, "source/{s}", .{boardConfig.data.linker_script});
                 defer b.allocator.free(linkerScript);

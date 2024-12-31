@@ -18,13 +18,14 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-
 .{
-  .name = "mcu/host",
-  .version = "0.0.0",
-  .dependencies = .{},
-  .paths = .{
-    "build.zig",
-    "build.zig.zon",
-  }
+    .name = "mcu/host",
+    .version = "0.0.0",
+    .dependencies = .{
+        .hal_interface = .{ .path = "../../interface" },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+    },
 }

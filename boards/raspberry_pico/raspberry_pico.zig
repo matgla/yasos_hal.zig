@@ -4,14 +4,9 @@ const builtin = @import("builtin");
 pub const hal = @import("hal");
 
 pub const uart = struct {
-    pub const instance = [_]hal.Uart{
-        hal.Uart{
-            .fd = 0,
-            .initialized = false,
-        },
-    };
+    const Uart0 = hal.uart.Uart(0, .{ .tx = 0, .rx = 1 }, hal.internal.Uart);
 
-    pub fn hasNum(comptime x: comptime_int) bool {
-        return x < instance.len;
-    }
+    pub const instance = [_]@TypeOf(Uart0.create()){
+        Uart0.create(),
+    };
 };
