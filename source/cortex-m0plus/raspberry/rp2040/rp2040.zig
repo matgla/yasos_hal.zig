@@ -1,5 +1,5 @@
 //
-// build.zig.zon
+// rp2040.zig
 //
 // Copyright (C) 2024 Mateusz Stadnik <matgla@live.com>
 //
@@ -18,22 +18,15 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-.{
-    .name = "yasos_hal",
-    .version = "0.0.1",
-    .dependencies = .{
-        .string = .{
-            .url = "https://github.com/JakubSzark/zig-string/archive/refs/heads/master.tar.gz",
-            .hash = "1220f5c17a0831fd955d885b409dafe1f972d2f25c6a98173cce6ca67a91c7971813",
-        },
-        .@"mcu/rp2040" = .{ .path = "source/cortex-m0plus/raspberry/rp2040" },
-        .@"mcu/host" = .{ .path = "source/host" },
-        .hal_interface = .{
-            .path = "interface",
-        },
-    },
-    .paths = .{
-        "build.zig",
-        "build.zig.zon",
-    },
+pub const internal = struct {
+    pub const Uart = @import("uart.zig").Uart;
+    pub const Time = @import("time.zig").Time;
+};
+
+pub const uart = @import("hal_interface").uart;
+pub const time = @import("hal_interface").time.Time(internal.Time).create();
+
+comptime {
+    _ = @import("boot2_rom.zig");
+    _ = @import("system_stubs.zig");
 }

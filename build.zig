@@ -97,7 +97,7 @@ pub const Builder = struct {
             });
             exe.want_lto = false;
             exe.root_module.addImport("board", boardModule);
-            // exe.root_module.addImport("hal", mcu.module("hal_interface"));
+            exe.root_module.addImport("hal", mcu.module("hal"));
             if (boardConfig.data.linker_script.len > 0) {
                 const linkerScript = try std.fmt.allocPrint(b.allocator, "source/{s}", .{boardConfig.data.linker_script});
                 defer b.allocator.free(linkerScript);

@@ -1,6 +1,6 @@
 {
   "mcu": "mcu/rp2040",
-  "linker_script": "cortex-m0/raspberry/rp2040/linker_script.ld",
+  "linker_script": "cortex-m0plus/raspberry/rp2040/linker_script.ld",
   "bundle_compiler_rt": false,
   "entry": "_entry_point"
 }

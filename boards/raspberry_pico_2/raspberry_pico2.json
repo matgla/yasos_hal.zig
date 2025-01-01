@@ -1,0 +1,6 @@
+{
+  "mcu": "mcu/rp2350",
+  "linker_script": "cortex-m33/raspberry/rp2350/linker_script.ld",
+  "bundle_compiler_rt": false,
+  "entry": "_entry_point"
+}

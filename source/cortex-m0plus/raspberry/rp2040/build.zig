@@ -43,7 +43,7 @@ fn configureCmake(b: *std.Build, cmake: []const u8) ![]const u8 {
         };
     }
 
-    const pico_sdk_path = b.pathJoin(&.{ b.pathFromRoot(".."), "pico-sdk" });
+    const pico_sdk_path = b.pathJoin(&.{ b.pathFromRoot("../../../../libs"), "pico-sdk" });
     std.log.info("Used PicoSDK: {s}", .{pico_sdk_path});
     std.log.info("CMake: {s}", .{cmake_exe});
 
@@ -107,6 +107,7 @@ pub fn build(b: *std.Build) !void {
     hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/pico_bootrom/include"));
     hal.addIncludePath(b.path("../pico-sdk/src/common/boot_picoboot_headers/include"));
     hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/boot_bootrom_headers/include"));
+    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/pico_time_adapter/include"));
 
     hal.addCMacro("PICO_RP2040", "1");
     hal.addCMacro("PICO_DIVIDER_CALL_IDIV0", "0");
@@ -123,13 +124,13 @@ pub fn build(b: *std.Build) !void {
             "../pico-sdk/src/rp2_common/hardware_timer/timer.c",
             "../pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c",
             "../pico-sdk/src/rp2_common/pico_runtime/runtime.c",
+            "../pico-sdk/src/rp2_common/hardware_sync/sync.c",
         },
         .flags = &.{"-std=c23"},
     });
     hal.addAssemblyFile(b.path("../pico-sdk/src/rp2_common/hardware_irq/irq_handler_chain.S"));
     hal.addAssemblyFile(b.path("../pico-sdk/src/rp2_common/pico_divider/divider_hardware.S"));
     hal.addAssemblyFile(b.path("../pico-sdk/src/rp2_common/pico_crt0/crt0.S"));
-    // hal.addAssemblyFile(b.path("vector_table.S"));
     hal.addAssemblyFile(b.path("boot_w25q080.S"));
 
     const boot2_binary = prepare_bootloader(b);

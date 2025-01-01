@@ -1,7 +1,7 @@
 //
-// rp2040.zig
+// time.zig
 //
-// Copyright (C) 2024 Mateusz Stadnik <matgla@live.com>
+// Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
 //
 // This program is free software: you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,13 +18,18 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-pub const internal = struct {
-    pub const Uart = @import("uart.zig").Uart;
+const std = @import("std");
+
+const time = @cImport({
+    @cInclude("pico/time.h");
+});
+
+pub const Time = struct {
+    pub fn sleep_ms(ms: u64) void {
+        time.sleep_ms(@intCast(ms));
+    }
+
+    pub fn sleep_us(us: u64) void {
+        time.sleep_us(@intCast(us));
+    }
 };
-
-pub const uart = @import("hal_interface").uart;
-
-comptime {
-    _ = @import("boot2_rom.zig");
-    _ = @import("system_stubs.zig");
-}

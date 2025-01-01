@@ -1,7 +1,7 @@
 //
-// build.zig.zon
+// time.zig
 //
-// Copyright (C) 2024 Mateusz Stadnik <matgla@live.com>
+// Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
 //
 // This program is free software: you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,22 +18,26 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-.{
-    .name = "yasos_hal",
-    .version = "0.0.1",
-    .dependencies = .{
-        .string = .{
-            .url = "https://github.com/JakubSzark/zig-string/archive/refs/heads/master.tar.gz",
-            .hash = "1220f5c17a0831fd955d885b409dafe1f972d2f25c6a98173cce6ca67a91c7971813",
-        },
-        .@"mcu/rp2040" = .{ .path = "source/cortex-m0plus/raspberry/rp2040" },
-        .@"mcu/host" = .{ .path = "source/host" },
-        .hal_interface = .{
-            .path = "interface",
-        },
-    },
-    .paths = .{
-        "build.zig",
-        "build.zig.zon",
-    },
+const std = @import("std");
+
+pub fn Time(comptime time: anytype) type {
+    const TimeImplementation = time;
+    return struct {
+        const Self = @This();
+        impl: TimeImplementation,
+
+        pub fn create() Self {
+            return Self{
+                .impl = TimeImplementation{},
+            };
+        }
+
+        pub fn sleep_us(_: Self, us: u64) void {
+            TimeImplementation.sleep_us(us);
+        }
+
+        pub fn sleep_ms(_: Self, ms: u64) void {
+            TimeImplementation.sleep_ms(ms);
+        }
+    };
 }

@@ -1,6 +1,7 @@
 const std = @import("std");
 
 const board = @import("board");
+const hal = @import("hal");
 
 pub export fn main() void {
     const uart = board.uart.uart0;
