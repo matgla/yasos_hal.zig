@@ -33,16 +33,24 @@ pub fn Uart(comptime index: usize, comptime pins: interface.uart.Pins) type {
 
     return struct {
         const Self = @This();
+        const Register = getRegisterAddress(index);
         pub fn init(_: Self, config: interface.uart.Config) interface.uart.InitializeError!void {
-            _ = uart.uart_init(@ptrFromInt(uart.UART0_BASE), @intCast(config.baudrate.?));
+            _ = uart.uart_init(Register, @intCast(config.baudrate.?));
             uart.gpio_set_function(@intCast(pins.tx.?), uart.GPIO_FUNC_UART);
             uart.gpio_set_function(@intCast(pins.rx.?), uart.GPIO_FUNC_UART);
         }
 
         pub fn write(_: Self, data: []const u8) !usize {
-            uart.uart_write_blocking(@ptrFromInt(uart.UART0_BASE), data.ptr, data.len);
-            uart.uart_tx_wait_blocking(@ptrFromInt(uart.UART0_BASE));
+            uart.uart_write_blocking(Register, data.ptr, data.len);
+            uart.uart_tx_wait_blocking(Register);
             return data.len;
+        }
+
+        fn getRegisterAddress(comptime id: u32) *uart.uart_inst_t {
+            if (id == 1) {
+                return @ptrFromInt(uart.UART1_BASE);
+            }
+            return @ptrFromInt(uart.UART0_BASE);
         }
     };
 }
