@@ -78,36 +78,36 @@ pub fn build(b: *std.Build) !void {
     _ = halInterface.module("hal_interface");
     _ = try toolchain.decorateModuleWithArmToolchain(b, hal, gcc);
 
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/hardware_base/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2040/hardware_structs/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/common/pico_base_headers/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/hardware_uart/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2040/hardware_regs/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2040/pico_platform/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/pico_platform_compiler/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/pico_platform_sections/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/pico_platform_panic/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/hardware_resets/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/hardware_clocks/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/hardware_timer/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/hardware_pll/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/hardware_irq/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/hardware_gpio/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/hardware_sync/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/hardware_sync_spin_lock/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/common/hardware_claim/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/common/pico_sync/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/common/pico_time/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/pico_runtime/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/pico_runtime_init/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/pico_divider/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/hardware_divider/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/common/pico_binary_info/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/common/boot_picobin_headers/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/pico_bootrom/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/common/boot_picoboot_headers/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/boot_bootrom_headers/include"));
-    hal.addIncludePath(b.path("../pico-sdk/src/rp2_common/pico_time_adapter/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_base/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2040/hardware_structs/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/common/pico_base_headers/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_uart/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2040/hardware_regs/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2040/pico_platform/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/pico_platform_compiler/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/pico_platform_sections/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/pico_platform_panic/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_resets/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_clocks/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_timer/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_pll/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_irq/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_gpio/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_sync/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_sync_spin_lock/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/common/hardware_claim/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/common/pico_sync/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/common/pico_time/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/pico_runtime/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/pico_runtime_init/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/pico_divider/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_divider/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/common/pico_binary_info/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/common/boot_picobin_headers/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/pico_bootrom/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/common/boot_picoboot_headers/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/boot_bootrom_headers/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/pico_time_adapter/include"));
 
     hal.addCMacro("PICO_RP2040", "1");
     hal.addCMacro("PICO_DIVIDER_CALL_IDIV0", "0");
@@ -115,22 +115,22 @@ pub fn build(b: *std.Build) !void {
 
     hal.addCSourceFiles(.{
         .files = &.{
-            "../pico-sdk/src/rp2_common/hardware_uart/uart.c",
-            "../pico-sdk/src/rp2_common/hardware_clocks/clocks.c",
-            "../pico-sdk/src/rp2_common/hardware_irq/irq.c",
-            "../pico-sdk/src/rp2_common/hardware_pll/pll.c",
-            "../pico-sdk/src/rp2_common/hardware_gpio/gpio.c",
-            "../pico-sdk/src/common/hardware_claim/claim.c",
-            "../pico-sdk/src/rp2_common/hardware_timer/timer.c",
-            "../pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c",
-            "../pico-sdk/src/rp2_common/pico_runtime/runtime.c",
-            "../pico-sdk/src/rp2_common/hardware_sync/sync.c",
+            "../../../../libs/pico-sdk/src/rp2_common/hardware_uart/uart.c",
+            "../../../../libs/pico-sdk/src/rp2_common/hardware_clocks/clocks.c",
+            "../../../../libs/pico-sdk/src/rp2_common/hardware_irq/irq.c",
+            "../../../../libs/pico-sdk/src/rp2_common/hardware_pll/pll.c",
+            "../../../../libs/pico-sdk/src/rp2_common/hardware_gpio/gpio.c",
+            "../../../../libs/pico-sdk/src/common/hardware_claim/claim.c",
+            "../../../../libs/pico-sdk/src/rp2_common/hardware_timer/timer.c",
+            "../../../../libs/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c",
+            "../../../../libs/pico-sdk/src/rp2_common/pico_runtime/runtime.c",
+            "../../../../libs/pico-sdk/src/rp2_common/hardware_sync/sync.c",
         },
         .flags = &.{"-std=c23"},
     });
-    hal.addAssemblyFile(b.path("../pico-sdk/src/rp2_common/hardware_irq/irq_handler_chain.S"));
-    hal.addAssemblyFile(b.path("../pico-sdk/src/rp2_common/pico_divider/divider_hardware.S"));
-    hal.addAssemblyFile(b.path("../pico-sdk/src/rp2_common/pico_crt0/crt0.S"));
+    hal.addAssemblyFile(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_irq/irq_handler_chain.S"));
+    hal.addAssemblyFile(b.path("../../../../libs/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S"));
+    hal.addAssemblyFile(b.path("../../../../libs/pico-sdk/src/rp2_common/pico_crt0/crt0.S"));
     hal.addAssemblyFile(b.path("boot_w25q080.S"));
 
     const boot2_binary = prepare_bootloader(b);
@@ -149,7 +149,7 @@ fn prepare_bootloader(b: *std.Build) std.Build.LazyPath {
     });
     bootloader.setLinkerScript(b.path("bootloader_stage2/memory.ld"));
     bootloader.addAssemblyFile(b.path("boot_w25q080.S"));
-    bootloader.addIncludePath(b.path("../pico-sdk/src/rp2040/hardware_regs/include"));
+    bootloader.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2040/hardware_regs/include"));
     const bootloader_objcopy = b.addObjCopy(bootloader.getEmittedBin(), .{ .basename = "stage2_w25q080.bin", .format = .bin });
     return bootloader_objcopy.getOutput();
 }
