@@ -36,14 +36,21 @@ pub fn Uart(comptime index: usize, comptime pins: Pins, comptime uart: anytype) 
             try self.impl.init(config);
         }
 
-        pub const Writer = std.io.Writer(Self, WriteError, writeSome);
+        pub const Writer = std.io.Writer(Self, WriteError, write_some);
 
         pub fn writer(self: Self) Writer {
             return Writer{ .context = self };
         }
 
-        fn writeSome(self: Self, buffer: []const u8) WriteError!usize {
+        pub fn write_some(self: Self, buffer: []const u8) WriteError!usize {
             return self.impl.write(buffer) catch return WriteError.WriteFailure;
+        }
+
+        pub fn write_some_opaque(self: *const anyopaque, buffer: []const u8) usize {
+            const realSelf: *const Self = @ptrCast(@alignCast(self));
+            return realSelf.*.impl.write(buffer) catch {
+                return 0;
+            };
         }
     };
 }
