@@ -108,6 +108,9 @@ pub fn build(b: *std.Build) !void {
     hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/common/boot_picoboot_headers/include"));
     hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/boot_bootrom_headers/include"));
     hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/pico_time_adapter/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_ticks/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_watchdog/include"));
+    hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_xosc/include"));
 
     hal.addCMacro("PICO_RP2040", "1");
     hal.addCMacro("PICO_DIVIDER_CALL_IDIV0", "0");
@@ -124,7 +127,13 @@ pub fn build(b: *std.Build) !void {
             "../../../../libs/pico-sdk/src/rp2_common/hardware_timer/timer.c",
             "../../../../libs/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c",
             "../../../../libs/pico-sdk/src/rp2_common/pico_runtime/runtime.c",
+            "../../../../libs/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c",
+            "../../../../libs/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c",
+            "../../../../libs/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c",
             "../../../../libs/pico-sdk/src/rp2_common/hardware_sync/sync.c",
+            "../../../../libs/pico-sdk/src/rp2_common/hardware_xosc/xosc.c",
+            "../../../../libs/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c",
+            "../../../../libs/pico-sdk/src/rp2_common/hardware_ticks/ticks.c",
         },
         .flags = &.{"-std=c23"},
     });
