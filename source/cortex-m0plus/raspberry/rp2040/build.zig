@@ -37,7 +37,7 @@ fn configureCmake(b: *std.Build, cmake: []const u8) ![]const u8 {
     var cmake_exe = cmake;
 
     if (cmake.len == 0) {
-        cmake_exe = b.findProgram(&.{"cmake"}, &.{"/usr/bin/cmake"}) catch {
+        cmake_exe = b.findProgram(&.{"cmake"}, &.{}) catch {
             std.log.err("Can't find CMake in system path", .{});
             unreachable;
         };
