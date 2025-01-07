@@ -22,7 +22,7 @@
     .name = "mcu/host",
     .version = "0.0.0",
     .dependencies = .{
-        .hal_interface = .{ .path = "../../interface" },
+        .hal_interface = .{ .path = "../../../../interface" },
     },
     .paths = .{
         "build.zig",
