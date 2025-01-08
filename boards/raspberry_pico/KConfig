@@ -28,4 +28,8 @@ if BOARD_RASPBERRY_PICO
   choice CHOICE_CPU
     default CPU_RP2040
   endchoice
+
+  config LINKER_SCRIPT_PATH
+    default "${hal_root}/cortex-m0plus/raspberry/rp2040/linker_script.ld" 
+
 endif

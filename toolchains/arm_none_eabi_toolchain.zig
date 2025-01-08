@@ -20,14 +20,11 @@
 
 const std = @import("std");
 
-pub fn decorateModuleWithArmToolchain(b: *std.Build, module: *std.Build.Module, gcc: []const u8) ![]const u8 {
-    var arm_gcc_exe = gcc;
-    if (gcc.len == 0) {
-        arm_gcc_exe = b.findProgram(&.{"arm-none-eabi-gcc"}, &.{}) catch {
-            std.log.err("Can't find arm-none-eabi-gcc in system path", .{});
-            unreachable;
-        };
-    }
+pub fn decorateModuleWithArmToolchain(b: *std.Build, module: *std.Build.Module) ![]const u8 {
+    const arm_gcc_exe = b.findProgram(&.{"arm-none-eabi-gcc"}, &.{}) catch {
+        std.log.err("Can't find arm-none-eabi-gcc in system path", .{});
+        unreachable;
+    };
 
     // idea from: https://github.com/haydenridd/stm32-zig-porting-guide/blob/main/03_with_zig_build/build.zig
     const gcc_arm_sysroot_path = std.mem.trim(u8, b.run(&.{ arm_gcc_exe, "-print-sysroot" }), "\r\n");

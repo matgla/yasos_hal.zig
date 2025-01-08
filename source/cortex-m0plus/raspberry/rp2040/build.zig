@@ -33,15 +33,11 @@ pub const targetOptions = std.Target.Query{
     }),
 };
 
-fn configureCmake(b: *std.Build, cmake: []const u8) ![]const u8 {
-    var cmake_exe = cmake;
-
-    if (cmake.len == 0) {
-        cmake_exe = b.findProgram(&.{"cmake"}, &.{}) catch {
-            std.log.err("Can't find CMake in system path", .{});
-            unreachable;
-        };
-    }
+fn configureCmake(b: *std.Build) ![]const u8 {
+    const cmake_exe = b.findProgram(&.{"cmake"}, &.{}) catch {
+        std.log.err("Can't find CMake in system path", .{});
+        unreachable;
+    };
 
     const pico_sdk_path = b.pathJoin(&.{ b.pathFromRoot("../../../../libs"), "pico-sdk" });
     std.log.info("Used PicoSDK: {s}", .{pico_sdk_path});
@@ -61,22 +57,19 @@ pub fn build(b: *std.Build) !void {
     const optimize = b.standardOptimizeOption(.{});
     const target = b.resolveTargetQuery(targetOptions);
 
-    const cmake = b.option([]const u8, "cmake", "path to CMake executable") orelse "";
-    const gcc = b.option([]const u8, "gcc", "path to arm-none-eabi-gcc executable") orelse "";
-
     const hal = b.addModule("hal", .{
         .root_source_file = b.path("rp2040.zig"),
         .target = target,
         .optimize = optimize,
     });
 
-    const picosdk = try configureCmake(b, cmake);
+    const picosdk = try configureCmake(b);
     const halInterface = b.dependency("hal_interface", .{ .optimize = optimize, .target = target });
     hal.addImport("hal_interface", halInterface.module("hal_interface"));
 
     hal.addIncludePath(.{ .cwd_relative = b.pathJoin(&.{ picosdk, "generated/pico_base" }) });
     _ = halInterface.module("hal_interface");
-    _ = try toolchain.decorateModuleWithArmToolchain(b, hal, gcc);
+    _ = try toolchain.decorateModuleWithArmToolchain(b, hal);
 
     hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_base/include"));
     hal.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2040/hardware_structs/include"));
