@@ -24,7 +24,7 @@ const buildin = @import("builtin");
 const Config = struct {
     cpu: ?[]const u8 = null,
     linker_script_path: ?[]const u8 = null,
-    bundle_compiler_rt: ?bool = null,
+    bundle_compiler_rt: ?bool = false,
 };
 
 fn load_config(b: *std.Build, config_file: []const u8) !Config {
@@ -57,20 +57,24 @@ pub fn build(b: *std.Build) !void {
     try builder.configureBoard(b, @as([]const u8, board), @as([]const u8, exec_name), root_file, optimize, @as([]const u8, config_file));
 }
 
-fn replace_tokens(linker_script: *[]u8) void {
+fn replace_tokens(b: *std.Build, linker_script: []const u8) []u8 {
     const token_position = std.mem.indexOf(u8, linker_script, "${");
+    var path: []u8 = b.fmt("{s}", .{linker_script});
     while (token_position) |start_position| {
-        std.log.err("Linker script path: {s}", .{linker_script});
-        std.log.err("Token position at: {d}", .{start_position});
-        const end_position = std.mem.indexOf(u8, linker_script, "}");
+        const hal_root = b.build_root.path.?;
+        const end_position = std.mem.indexOf(u8, path, "}");
         if (end_position) |end| {
-            const token = linker_script[start_position + 2 .. end];
-            std.log.err("Token: {s}", .{token});
-            linker_script = linker_script[end..];
+            const token = path[start_position + 2 .. end];
+            if (std.mem.eql(u8, token, "hal_root")) {
+                path = b.fmt("{s}{s}{s}", .{ path[0..start_position], hal_root, path[end + 1 ..] });
+            } else {
+                unreachable;
+            }
         } else {
-            return;
+            return path;
         }
     }
+    return path;
 }
 
 pub const Builder = struct {
@@ -88,7 +92,10 @@ pub const Builder = struct {
         defer b.allocator.free(halDependency);
         const mcu = b.dependency(halDependency, .{});
 
-        const root_path = std.Build.LazyPath{ .src_path = .{ .sub_path = root_file, .owner = b } };
+        const root_path = std.Build.LazyPath{ .src_path = .{
+            .sub_path = root_file,
+            .owner = b,
+        } };
 
         if (mcu.module("hal").resolved_target) |target| {
             const boardModule = b.addModule("board", .{
@@ -108,9 +115,12 @@ pub const Builder = struct {
             exe.root_module.addImport("board", boardModule);
             exe.root_module.addImport("hal", mcu.module("hal"));
             if (config.linker_script_path) |linker_script| {
-                var linker = b.fmt("{s}", .{linker_script});
-                replace_tokens(&linker);
-                exe.setLinkerScript(b.path(linker));
+                const linker = replace_tokens(b, linker_script);
+                defer b.allocator.free(linker);
+                const path = std.Build.LazyPath{
+                    .cwd_relative = linker,
+                };
+                exe.setLinkerScript(path);
             }
 
             if (config.bundle_compiler_rt) |bundle_compiler_rt| {

@@ -21,7 +21,6 @@ rsource "./boards/KConfig"
 rsource "./source/KConfig"
 
 menu "Compile options"
-
 config LINKER_SCRIPT_PATH
     string "Linker script"
     help 
@@ -31,4 +30,19 @@ config BUNDLE_COMPILER_RT
     bool "Bundle compiler RT"
     help 
         Bundle compiler RT. Compiler RT may not be compatible with GCC based environment, i.e. for newlib nano
+endmenu
+
+menu "Memory"
+
+config FIRMWARE_IN_FLASH
+    bool
+
+config FLASH_MEMORY_ADDRESS
+    string "Flash memory start address for firmware"
+    depends on FIRMWARE_IN_FLASH 
+
+config FLASH_MEMORY_SIZE
+    string "Flash memory size in format like: 1024K" 
+    depends on FIRMWARE_IN_FLASH
+
 endmenu

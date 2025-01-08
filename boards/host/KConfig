@@ -28,4 +28,7 @@ if BOARD_HOST
   choice CHOICE_CPU
     default CPU_HOST 
   endchoice
+
+  config BUNDLE_COMPILER_RT
+    default y 
 endif

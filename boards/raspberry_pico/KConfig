@@ -25,11 +25,23 @@ config BOARD
   depends on BOARD_RASPBERRY_PICO 
 
 if BOARD_RASPBERRY_PICO
+  config FIRMWARE_IN_FLASH 
+    default y
+
   choice CHOICE_CPU
     default CPU_RP2040
   endchoice
 
   config LINKER_SCRIPT_PATH
-    default "${hal_root}/cortex-m0plus/raspberry/rp2040/linker_script.ld" 
+    default "${hal_root}/source/cortex-m0plus/raspberry/rp2040/linker_script.ld" 
+
+  config BUNDLE_COMPILER_RT
+    default n 
+
+  config FLASH_MEMORY_ADDRESS
+    default "0x10000000"
+  
+  config FLASH_MEMORY_SIZE
+    default "2MB"
 
 endif
