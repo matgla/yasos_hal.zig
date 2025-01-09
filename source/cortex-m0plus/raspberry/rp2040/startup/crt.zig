@@ -21,20 +21,39 @@
 const c = @cImport({
     @cInclude("hardware/regs/resets.h");
     @cInclude("hardware/resets.h");
+    @cInclude("pico/runtime_init.h");
 });
 
-extern var _data_start: u8;
-extern var _data_end: u8;
+extern var __data_start__: u8;
+extern var __data_end__: u8;
 extern var __data_start_flash__: u8;
 
+extern var __bss_start__: u8;
+extern var __bss_end__: u8;
+
 fn initialize_data() void {
-    const data_start: [*]u8 = @ptrCast(&_data_start);
-    const data_end: [*]u8 = @ptrCast(&_data_end);
+    const data_start: [*]u8 = @ptrCast(&__data_start__);
+    const data_end: [*]u8 = @ptrCast(&__data_end__);
     const data_len = @intFromPtr(data_end) - @intFromPtr(data_start);
     const data_src: [*]const u8 = @ptrCast(&__data_start_flash__);
 
     @memcpy(data_start[0..data_len], data_src[0..data_len]);
 }
+
+fn initialize_bss() void {
+    const bss_start: [*]u8 = @ptrCast(&__bss_start__);
+    const bss_end: [*]u8 = @ptrCast(&__bss_end__);
+    const bss_length = @intFromPtr(bss_end) - @intFromPtr(bss_start);
+    @memset(bss_start[0..bss_length], 0);
+}
+
+extern fn __libc_init_array() void;
+
+fn initialize_libc_constructors() void {
+    __libc_init_array();
+}
+
+export fn _init() void {}
 
 export fn crt_init() void {
     c.reset_block(~(c.RESETS_RESET_IO_QSPI_BITS | c.RESETS_RESET_PADS_QSPI_BITS |
@@ -47,4 +66,8 @@ export fn crt_init() void {
         c.RESETS_RESET_UART1_BITS | c.RESETS_RESET_USBCTRL_BITS));
 
     initialize_data();
+    initialize_bss();
+    initialize_libc_constructors();
+
+    c.runtime_init_clocks();
 }

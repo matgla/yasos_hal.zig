@@ -1,7 +1,7 @@
 //
-// rp2040.zig
+// common.zig
 //
-// Copyright (C) 2024 Mateusz Stadnik <matgla@live.com>
+// Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
 //
 // This program is free software: you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,16 +18,6 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-pub const internal = struct {
-    pub const Uart = @import("source/uart.zig").Uart;
-    pub const Time = @import("source/time.zig").Time;
-};
-
-pub const uart = @import("hal_interface").uart;
-pub const time = @import("hal_interface").time.Time(internal.Time).create();
-
 comptime {
-    _ = @import("bootloader_stage2/boot2_rom.zig");
-    _ = @import("hal_common");
-    _ = @import("startup/crt.zig");
+    _ = @import("system_stubs.zig");
 }

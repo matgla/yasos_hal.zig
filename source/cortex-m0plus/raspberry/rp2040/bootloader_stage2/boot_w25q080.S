@@ -73,10 +73,10 @@ ssi_register .req r7
 #define FLASH_WAIT_CYCLES 4 
 
 .section .text
-.global _boot2_start 
-.type _boot2_start,%function
+.global _start 
+.type _start,%function
 .thumb_func
-_boot2_start:
+_start:
 pad_config:
   ldr pads_register, =PADS_QSPI_BASE
   ldr r1, =SCLK_PAD_CONFIGURATION_DRIVE_8MA_SLEWFAST 

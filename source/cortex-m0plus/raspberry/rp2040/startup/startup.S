@@ -25,12 +25,12 @@
 #define PPB_BASE 0xe0000000
 #define M0PLUS_VTOR_OFFSET 0x0000ed08
 
-.section .vector_table, "ax"
+.section .vectors, "ax"
 .align 2 
 
 .global __vector_table
 __vector_table:
-  .word _stack_top 
+  .word __stack_top__ 
   .word _start
   .word irq_nmi 
   .word irq_hard_fault

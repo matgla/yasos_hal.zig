@@ -112,11 +112,13 @@ pub const Builder = struct {
                 .optimize = optimize,
             });
             exe.want_lto = false;
+            exe.link_function_sections = true;
+            exe.link_data_sections = true;
+            exe.link_gc_sections = true;
             exe.root_module.addImport("board", boardModule);
             exe.root_module.addImport("hal", mcu.module("hal"));
             if (config.linker_script_path) |linker_script| {
                 const linker = replace_tokens(b, linker_script);
-                defer b.allocator.free(linker);
                 const path = std.Build.LazyPath{
                     .cwd_relative = linker,
                 };
