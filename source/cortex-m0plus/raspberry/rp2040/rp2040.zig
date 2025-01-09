@@ -29,4 +29,5 @@ pub const time = @import("hal_interface").time.Time(internal.Time).create();
 comptime {
     _ = @import("boot2_rom.zig");
     _ = @import("system_stubs.zig");
+    _ = @import("crt.zig");
 }

@@ -132,7 +132,7 @@ pub fn build(b: *std.Build) !void {
     });
     hal.addAssemblyFile(b.path("../../../../libs/pico-sdk/src/rp2_common/hardware_irq/irq_handler_chain.S"));
     hal.addAssemblyFile(b.path("../../../../libs/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S"));
-    hal.addAssemblyFile(b.path("../../../../libs/pico-sdk/src/rp2_common/pico_crt0/crt0.S"));
+    hal.addAssemblyFile(b.path("startup.S"));
     hal.addAssemblyFile(b.path("boot_w25q080.S"));
 
     const boot2_binary = prepare_bootloader(b);

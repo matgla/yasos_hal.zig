@@ -72,8 +72,6 @@ export fn _sbrk(_: isize) *void {
     return @ptrCast(buf[0..10].ptr);
 }
 
-export fn system_init() void {}
-
 export fn hard_assertion_failure() void {
     while (true) {}
 }

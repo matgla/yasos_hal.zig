@@ -31,7 +31,7 @@
 .global __vector_table
 __vector_table:
   .word _stack_top 
-  .word _reset_handler
+  .word _start
   .word irq_nmi 
   .word irq_hard_fault
   .word irq_reserved 
@@ -128,22 +128,22 @@ declare_irq_handler_breakpoint irq29
 declare_irq_handler_breakpoint irq30
 declare_irq_handler_breakpoint irq31
 
-.global _entry_point
-.type _entry_point,%function
+.global __unhandled_user_irq
+.type __unhandled_user_irq,%function
 .thumb_func 
-_entry_point:
-  // TODO: implement
-  bkpt #0
+__unhandled_user_irq:
+  mrs r0, ipsr
+  subs r0, #16
+  bkpt #0 // irq number in r0
 
-
-.global _reset_handler
-.type _reset_handler,%function
+.global _start
+.type _start,%function
 .thumb_func 
-_reset_handler:
+_start:
   ldr r1, =__vector_table 
   ldr r0, =(PPB_BASE + M0PLUS_VTOR_OFFSET)
   str r1, [r0]
-  ldr r1, =system_init 
+  ldr r1, =crt_init
   blx r1
   ldr r1, =main 
   blx r1 

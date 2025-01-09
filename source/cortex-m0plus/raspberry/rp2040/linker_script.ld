@@ -129,8 +129,10 @@ SECTIONS
     . = ALIGN(4);
     *(.uninitialized_data*)
   } > SRAM 
-   .data : {
-        __data_start__ = .;
+
+  __data_start_flash__ = LOADADDR(.data);
+  .data : {
+        _data_start = .;
         *(vtable)
 
         *(.time_critical*)
@@ -163,7 +165,7 @@ SECTIONS
         /* All data end */
         __tdata_end = .;
     } > SRAM AT> FLASH
-    PROVIDE(__data_end__ = .);
+    PROVIDE(_data_end = .);
 
     /* __etext is (for backwards compatibility) the name of the .data init source pointer (...) */
     __etext = LOADADDR(.data);
@@ -194,8 +196,7 @@ SECTIONS
         end = __end__;
         KEEP(*(.heap*))
     } > SRAM
-    /* historically on GCC sbrk was growing past __HeapLimit to __StackLimit, however
-       to be more compatible, we now set __HeapLimit explicitly to where the end of the heap is */
+    
     __HeapLimit = ORIGIN(SRAM) + LENGTH(SRAM);
 
     /* Start and end symbols must be word-aligned */
@@ -241,10 +242,9 @@ SECTIONS
     /* stack limit is poorly named, but historically is maximum heap ptr */
     __StackLimit = ORIGIN(SRAM) + LENGTH(SRAM);
     __StackOneTop = ORIGIN(SCRATCH_X) + LENGTH(SCRATCH_X);
-    __StackTop = ORIGIN(SCRATCH_Y) + LENGTH(SCRATCH_Y);
+    _stack_top = ORIGIN(SCRATCH_Y) + LENGTH(SCRATCH_Y);
     __StackOneBottom = __StackOneTop - SIZEOF(.stack1_dummy);
-    __StackBottom = __StackTop - SIZEOF(.stack_dummy);
-    PROVIDE(__stack = __StackTop);
+    PROVIDE(_stack_top = _stack_top); 
 
     /* picolibc and LLVM */
     PROVIDE (__heap_start = __end__);
