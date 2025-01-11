@@ -24,20 +24,16 @@ const clock = @cImport({
     @cInclude("hardware/clocks.h");
 });
 
-const registers = @import("hal_armv6_m");
-
 pub const Cpu = struct {
     pub fn name() []const u8 {
-        return "RP2040";
+        return "HOST";
     }
 
     pub fn frequency() u64 {
-        return clock.clock_get_hz(clock.clk_sys);
+        return 123000000;
     }
 
     pub fn number_of_cores() u8 {
-        return 2;
+        return 4;
     }
-
-    pub const regs: registers.Registers = .{};
 };

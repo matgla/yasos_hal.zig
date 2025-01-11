@@ -1,5 +1,5 @@
 //
-// cpu.zig
+// armv6-m_registers.zig
 //
 // Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
 //
@@ -18,26 +18,21 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-const std = @import("std");
+const mmio = @import("hal").mmio;
 
-const clock = @cImport({
-    @cInclude("hardware/clocks.h");
-});
+pub const SystemControlBlock = extern struct {
+    cpuid: mmio.Mmio(packed struct(u32) {
+        revision: u4,
+        partno: u12,
+        architecture: u4,
+        variant: u4,
+        implementer: u8,
+    }),
+};
 
-const registers = @import("hal_armv6_m");
+pub const Registers = struct {
+    pub const ppb_base: u32 = 0xe0000000;
+    pub const scb_base: u32 = ppb_base + 0xed00;
 
-pub const Cpu = struct {
-    pub fn name() []const u8 {
-        return "RP2040";
-    }
-
-    pub fn frequency() u64 {
-        return clock.clock_get_hz(clock.clk_sys);
-    }
-
-    pub fn number_of_cores() u8 {
-        return 2;
-    }
-
-    pub const regs: registers.Registers = .{};
+    pub const scb: *volatile SystemControlBlock = @ptrFromInt(scb_base);
 };

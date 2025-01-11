@@ -43,5 +43,9 @@ pub fn Cpu(comptime cpu: anytype) type {
         pub fn number_of_cores(_: Self) u8 {
             return CpuImplementation.number_of_cores();
         }
+
+        pub fn regs(_: Self) type { //@TypeOf(CpuImplementation.regs) {
+            return @TypeOf(CpuImplementation.regs);
+        }
     };
 }

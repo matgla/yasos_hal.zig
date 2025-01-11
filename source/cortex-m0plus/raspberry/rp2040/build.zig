@@ -72,7 +72,16 @@ pub fn build(b: *std.Build) !void {
         .target = target,
         .optimize = optimize,
     });
+
+    const hal_armv6_m = b.addModule("hal_armv6_m", .{
+        .root_source_file = b.path("../../../arm/armv6-m/registers.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
     hal.addImport("hal_common", hal_common);
+    hal_armv6_m.addImport("hal", hal);
+    hal.addImport("hal_armv6_m", hal_armv6_m);
 
     hal.addIncludePath(.{ .cwd_relative = b.pathJoin(&.{ picosdk, "generated/pico_base" }) });
     _ = halInterface.module("hal_interface");
@@ -152,7 +161,7 @@ pub fn build(b: *std.Build) !void {
 fn prepare_bootloader(b: *std.Build) std.Build.LazyPath {
     const bootloader = b.addExecutable(.{
         .name = "stage2-bootloader",
-        .optimize = .ReleaseSmall,
+        .optimize = .Debug,
         .target = b.resolveTargetQuery(targetOptions),
         .root_source_file = null,
     });
@@ -160,5 +169,6 @@ fn prepare_bootloader(b: *std.Build) std.Build.LazyPath {
     bootloader.addAssemblyFile(b.path("bootloader_stage2/boot_w25q080.S"));
     bootloader.addIncludePath(b.path("../../../../libs/pico-sdk/src/rp2040/hardware_regs/include"));
     const bootloader_objcopy = b.addObjCopy(bootloader.getEmittedBin(), .{ .basename = "stage2_w25q080.bin", .format = .bin });
+    b.installArtifact(bootloader);
     return bootloader_objcopy.getOutput();
 }

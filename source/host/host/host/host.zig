@@ -20,5 +20,7 @@
 
 pub const internal = struct {
     pub const Uart = @import("uart.zig").Uart;
+    pub const Cpu = @import("source/cpu.zig").Cpu;
 };
 pub const uart = @import("hal_interface").uart;
+pub const cpu = @import("hal_interface").cpu.Cpu(internal.Cpu).create();

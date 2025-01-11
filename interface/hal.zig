@@ -21,3 +21,4 @@
 pub const uart = @import("uart.zig");
 pub const time = @import("time.zig");
 pub const cpu = @import("cpu.zig");
+pub const mmio = @import("mmio.zig");

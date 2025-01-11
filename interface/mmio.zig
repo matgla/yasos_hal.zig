@@ -1,5 +1,5 @@
 //
-// cpu.zig
+// mmio.zig
 //
 // Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
 //
@@ -18,26 +18,16 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-const std = @import("std");
+pub fn Mmio(comptime mmio: anytype) type {
+    const MmioImplementation = mmio;
+    return extern struct {
+        const Self = @This();
+        impl: MmioImplementation,
 
-const clock = @cImport({
-    @cInclude("hardware/clocks.h");
-});
-
-const registers = @import("hal_armv6_m");
-
-pub const Cpu = struct {
-    pub fn name() []const u8 {
-        return "RP2040";
-    }
-
-    pub fn frequency() u64 {
-        return clock.clock_get_hz(clock.clk_sys);
-    }
-
-    pub fn number_of_cores() u8 {
-        return 2;
-    }
-
-    pub const regs: registers.Registers = .{};
-};
+        pub fn create() Self {
+            return Self{ .impl = MmioImplementation{
+                .raw = {},
+            } };
+        }
+    };
+}

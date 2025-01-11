@@ -177,9 +177,9 @@ reconfigure_ssi_controller_to_remove_command:
   str r1, [ssi_register, #SSI_SSIENR_OFFSET]
 
 /* And now flash should be working in memory mapped mode */ 
-
+  bkpt #1
   ldr r0, =(XIP_BASE + 0x100)
-  ldr r1, =(M0PLUS_VTOR_OFFSET)
+  ldr r1, =(XIP_SSI_BASE + M0PLUS_VTOR_OFFSET)
   str r0, [r1]
   ldmia r0, {r0, r1}
   msr msp, r0
