@@ -1,7 +1,7 @@
 //
-// rp2040.zig
+// cpu.zig
 //
-// Copyright (C) 2024 Mateusz Stadnik <matgla@live.com>
+// Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
 //
 // This program is free software: you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,17 +18,22 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-pub const internal = struct {
-    pub const Uart = @import("source/uart.zig").Uart;
-    pub const Time = @import("source/time.zig").Time;
-    pub const Cpu = @import("source/cpu.zig").Cpu;
-};
+const std = @import("std");
 
-pub const uart = @import("hal_interface").uart;
-pub const time = @import("hal_interface").time.Time(internal.Time).create();
-pub const cpu = @import("hal_interface").cpu.Cpu(internal.Cpu).create();
-comptime {
-    _ = @import("bootloader_stage2/boot2_rom.zig");
-    _ = @import("hal_common");
-    _ = @import("startup/crt.zig");
-}
+const clock = @cImport({
+    @cInclude("hardware/clocks.h");
+});
+
+pub const Cpu = struct {
+    pub fn name() []const u8 {
+        return "RP2040";
+    }
+
+    pub fn frequency() u64 {
+        return clock.clock_get_hz(clock.clk_sys);
+    }
+
+    pub fn number_of_cores() u8 {
+        return 2;
+    }
+};

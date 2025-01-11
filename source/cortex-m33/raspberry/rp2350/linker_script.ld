@@ -29,6 +29,9 @@ SECTIONS
   {
     . = ALIGN(4);
     KEEP(*(.vectors))
+    __bootmeta_start__ = .;
+    KEEP(*(.bootmeta))
+    __bootmeta_end__ = .;
     *(.text*)
     KEEP(*(.init))
     KEEP(*(.fini))

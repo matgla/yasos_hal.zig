@@ -1,5 +1,5 @@
 //
-// hal.zig
+// cpu.zig
 //
 // Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
 //
@@ -18,6 +18,30 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-pub const uart = @import("uart.zig");
-pub const time = @import("time.zig");
-pub const cpu = @import("cpu.zig");
+const std = @import("std");
+
+pub fn Cpu(comptime cpu: anytype) type {
+    const CpuImplementation = cpu;
+    return struct {
+        const Self = @This();
+        impl: CpuImplementation,
+
+        pub fn create() Self {
+            return Self{
+                .impl = CpuImplementation{},
+            };
+        }
+
+        pub fn name(_: Self) []const u8 {
+            return CpuImplementation.name();
+        }
+
+        pub fn frequency(_: Self) u64 {
+            return CpuImplementation.frequency();
+        }
+
+        pub fn number_of_cores(_: Self) u8 {
+            return CpuImplementation.number_of_cores();
+        }
+    };
+}
