@@ -17,14 +17,14 @@
 # <https://www.gnu.org/licenses/>.
 #
 
-config BOARD_RASPBERRY_PICO
+config BOARD_RASPBERRY_PICO_DISCARD_IN_CONF
   bool "Raspberry Pico"
 
 config BOARD
-  def_string "raspberry_pico" if BOARD_RASPBERRY_PICO
-  depends on BOARD_RASPBERRY_PICO 
+  def_string "raspberry_pico" if BOARD_RASPBERRY_PICO_DISCARD_IN_CONF
+  depends on BOARD_RASPBERRY_PICO_DISCARD_IN_CONF 
 
-if BOARD_RASPBERRY_PICO
+if BOARD_RASPBERRY_PICO_DISCARD_IN_CONF
   config FIRMWARE_IN_FLASH 
     default y
 
@@ -32,11 +32,8 @@ if BOARD_RASPBERRY_PICO
     default CPU_RP2040
   endchoice
 
-  config LINKER_SCRIPT_PATH
+  config BUILD_LINKER_SCRIPT_PATH
     default "${hal_root}/source/cortex-m0plus/raspberry/rp2040/linker_script.ld" 
-
-  config BUNDLE_COMPILER_RT
-    default n 
 
   config FLASH_MEMORY_ADDRESS
     default "0x10000000"

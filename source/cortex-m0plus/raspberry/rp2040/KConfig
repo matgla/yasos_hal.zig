@@ -19,6 +19,7 @@
 
 config CPU_RP2040
   bool "RP2040"
+  select CPU_HAS_MPU 
 
 config CPU
   def_string "rp2040" if CPU_RP2040
@@ -32,4 +33,8 @@ if CPU_RP2040
   choice CHOICE_CPU_FAMILY 
     default CPU_FAMILY_RASPBERRY 
   endchoice
+
+  config BUILD_BUNDLE_COMPILER_RT
+    default n 
+
 endif 

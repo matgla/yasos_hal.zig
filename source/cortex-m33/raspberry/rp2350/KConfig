@@ -19,6 +19,7 @@
 
 config CPU_RP2350
   bool "RP2350"
+  select CPU_HAS_MPU
 
 config CPU
   def_string "rp2350" if CPU_RP2350
@@ -32,4 +33,5 @@ if CPU_RP2350
   choice CHOICE_CPU_FAMILY 
     default CPU_FAMILY_RASPBERRY 
   endchoice
+
 endif 
