@@ -1,3 +1,4 @@
+#
 # KConfig
 #
 # Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
@@ -17,9 +18,10 @@
 # <https://www.gnu.org/licenses/>.
 #
 
-config CPU_ARCH_CORTEX_M0_PLUS
-  bool "Cortex-M0+"
+config CPU_ARCH_STUB_HOST
+  bool "host"
 
-config CPU_ARCHITECTURE
-  def_string "cortex-m0plus" if CPU_ARCH_CORTEX_M0_PLUS
-  depends on CPU_ARCH_CORTEX_M0_PLUS
+config CONFIG_CPU_ARCH
+  def_string "host"
+  depends on CPU_ARCH_STUB_HOST
+

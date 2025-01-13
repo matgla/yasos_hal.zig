@@ -17,12 +17,7 @@
 # <https://www.gnu.org/licenses/>.
 #
 
-config CPU_ARCH_HOST
+config CPU_FAMILY_HOST
   bool "host"
-
-config CPU_ARCHITECTURE
-  def_string "host" if CPU_ARCH_HOST
-  depends on CPU_ARCH_HOST
-
 
 

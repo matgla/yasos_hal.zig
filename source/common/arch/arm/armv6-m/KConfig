@@ -1,3 +1,4 @@
+#
 # KConfig
 #
 # Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
@@ -17,12 +18,10 @@
 # <https://www.gnu.org/licenses/>.
 #
 
-config CPU_ARCH_CORTEX_M33
-  bool "Cortex-M33"
+config CPU_ARCH_ARM_ARMV6_M
+  bool "armv6-m"
 
-config CPU_ARCHITECTURE
-  def_string "cortex-m33" if CPU_ARCH_CORTEX_M33
-  depends on CPU_ARCH_CORTEX_M33
-
-
+config CONFIG_CPU_ARCH
+  def_string "armv6-m" 
+  depends on CPU_ARCH_ARM_ARMV6_M
 

@@ -1,3 +1,4 @@
+#
 # KConfig
 #
 # Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
@@ -17,24 +18,13 @@
 # <https://www.gnu.org/licenses/>.
 #
 
-config CPU_RP2040
-  bool "RP2040"
-  select CPU_HAS_MPU 
+config CPU_CORE_ARM_CORTEX_M0_PLUS
+  bool "cortex-m0plus"
 
-config CPU
-  def_string "rp2040" if CPU_RP2040
-  depends on CPU_RP2040
 
-if CPU_RP2040 
+if CPU_CORE_ARM_CORTEX_M0_PLUS
   choice CHOICE_CPU_ARCHITECTURE
-    default CPU_ARCH_CORTEX_M0_PLUS
+    default CPU_ARCH_ARM_ARMV6_M
   endchoice
+endif
 
-  choice CHOICE_CPU_FAMILY 
-    default CPU_FAMILY_RASPBERRY 
-  endchoice
-
-  config BUILD_BUNDLE_COMPILER_RT
-    default n 
-
-endif 

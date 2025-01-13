@@ -21,13 +21,13 @@ rsource "./boards/KConfig"
 rsource "./source/KConfig"
 
 menu "Build options"
-config BUILD_LINKER_SCRIPT_PATH
+config CONFIG_BUILD_LINKER_SCRIPT_PATH
     string "Linker script"
     help 
         Path to custom linker script for executable linking
 
 
-config BUILD_BUNDLE_COMPILER_RT 
+config CONFIG_BUILD_BUNDLE_COMPILER_RT 
     bool "Bundle compiler RT" 
     help 
         Bundle compiler RT. Compiler RT may not be compatible with GCC based environment, i.e. for newlib nano

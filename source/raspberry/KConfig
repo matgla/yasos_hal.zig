@@ -17,19 +17,6 @@
 # <https://www.gnu.org/licenses/>.
 #
 
-config CPU_HOST
-  bool "Host"
+config CPU_FAMILY_RASPBERRY
+  bool "Raspberry"
 
-config CPU
-  def_string "host" if CPU_HOST
-  depends on CPU_HOST
-
-if CPU_HOST
-  choice CHOICE_CPU_ARCHITECTURE
-    default CPU_ARCH_HOST
-  endchoice
-
-  choice CHOICE_CPU_FAMILY 
-    default CPU_FAMILY_HOST
-  endchoice
-endif 

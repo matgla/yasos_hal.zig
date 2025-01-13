@@ -17,21 +17,19 @@
 # <https://www.gnu.org/licenses/>.
 #
 
-config CPU_RP2350
-  bool "RP2350"
-  select CPU_HAS_MPU
+config CPU_RP2040
+  bool "rp2040"
+  select CPU_HAS_MPU 
 
-config CPU
-  def_string "rp2350" if CPU_RP2350
-  depends on CPU_RP2350
+if CPU_RP2040 
+  config CONFIG_CPU 
+    def_string "rp2040"
 
-if CPU_RP2350
-  choice CHOICE_CPU_ARCHITECTURE
-    default CPU_ARCH_CORTEX_M33
+  choice CHOICE_CPU_FAMILY
+    default CPU_FAMILY_RASPBERRY
+  endchoice 
+
+  choice CHOICE_CPU_CORE
+    default CPU_CORE_ARM_CORTEX_M0_PLUS
   endchoice
-
-  choice CHOICE_CPU_FAMILY 
-    default CPU_FAMILY_RASPBERRY 
-  endchoice
-
 endif 

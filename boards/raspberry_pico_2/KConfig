@@ -20,17 +20,16 @@
 config BOARD_RASPBERRY_PICO_2_DISCARD_IN_CONF
   bool "Raspberry Pico 2"
 
-config BOARD
-  def_string "raspberry_pico_2" if BOARD_RASPBERRY_PICO_2_DISCARD_IN_CONF
-  depends on BOARD_RASPBERRY_PICO_2_DISCARD_IN_CONF
-
 if BOARD_RASPBERRY_PICO_2_DISCARD_IN_CONF
+  config CONFIG_BOARD
+    def_string "raspberry_pico_2"
+
   choice CHOICE_CPU
     default CPU_RP2350
   endchoice
 
-  config BUILD_LINKER_SCRIPT_PATH
-    default "${hal_root}/source/cortex-m33/raspberry/rp2350/linker_script.ld" 
+  config CONFIG_BUILD_LINKER_SCRIPT_PATH
+    default "${hal_root}/source/raspberry/rp2350/linker_script.ld" 
 
   config FLASH_MEMORY_ADDRESS
     default "0x10000000"

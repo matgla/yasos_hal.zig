@@ -20,18 +20,23 @@
 menu "CPU Configuration"
 
 choice CHOICE_CPU_ARCHITECTURE
-  prompt "CPU architecture"
-  rsource "**/KConfig"
+    prompt "CPU architecture"
+    rsource "common/arch/**/**/KConfig"
 endchoice 
+
+choice CHOICE_CPU_CORE 
+    prompt "CPU core"
+    rsource "common/cores/**/**/KConfig"
+endchoice
 
 choice CHOICE_CPU_FAMILY
     prompt "CPU family"
-    rsource "**/**/KConfig"
+    rsource "**/KConfig"
 endchoice
 
 choice CHOICE_CPU 
-    prompt "CPU"
-    rsource "**/**/**/KConfig"
+    prompt "CPU model"
+    rsource "**/**/KConfig"
 endchoice 
 
 endmenu

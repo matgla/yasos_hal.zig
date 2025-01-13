@@ -23,8 +23,8 @@ const buildin = @import("builtin");
 
 const Config = struct {
     cpu: ?[]const u8 = null,
-    linker_script_path: ?[]const u8 = null,
-    bundle_compiler_rt: ?bool = false,
+    build_linker_script_path: ?[]const u8 = null,
+    build_bundle_compiler_rt: ?bool = false,
 };
 
 fn load_config(b: *std.Build, config_file: []const u8) !Config {
@@ -117,7 +117,7 @@ pub const Builder = struct {
             exe.link_gc_sections = true;
             exe.root_module.addImport("board", boardModule);
             exe.root_module.addImport("hal", mcu.module("hal"));
-            if (config.linker_script_path) |linker_script| {
+            if (config.build_linker_script_path) |linker_script| {
                 const linker = replace_tokens(b, linker_script);
                 const path = std.Build.LazyPath{
                     .cwd_relative = linker,
@@ -125,7 +125,7 @@ pub const Builder = struct {
                 exe.setLinkerScript(path);
             }
 
-            if (config.bundle_compiler_rt) |bundle_compiler_rt| {
+            if (config.build_bundle_compiler_rt) |bundle_compiler_rt| {
                 exe.bundle_compiler_rt = bundle_compiler_rt;
             }
 

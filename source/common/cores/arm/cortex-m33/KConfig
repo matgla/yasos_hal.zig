@@ -1,3 +1,4 @@
+#
 # KConfig
 #
 # Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
@@ -17,9 +18,12 @@
 # <https://www.gnu.org/licenses/>.
 #
 
-config CPU_FAMILY_RASPBERRY
-  bool "Raspberry"
+config CPU_CORE_ARM_CORTEX_M33
+  bool "cortex-m33"
 
-config CPU_RASPBERRY
-  def_string "raspberry" if CPU_FAMILY_RASPBERRY
-  depends on CPU_FAMILY_RASPBERRY
+if CPU_CORE_ARM_CORTEX_M33 
+  choice CHOICE_CPU_ARCHITECTURE
+    default CPU_ARCH_ARM_ARMV8_M
+  endchoice
+endif
+

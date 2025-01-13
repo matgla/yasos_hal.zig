@@ -17,18 +17,17 @@
 # <https://www.gnu.org/licenses/>.
 #
 
-config BOARD_HOST_DISCARD_IN_CONF
-  bool "HOST"
+config BOARD_HOST
+  bool "Host"
 
-config BOARD
-  def_string "host" if BOARD_HOST_DISCARD_IN_CONF
-  depends on BOARD_HOST_DISCARD_IN_CONF 
-
-if BOARD_HOST_DISCARD_IN_CONF 
-  choice CHOICE_CPU
+if BOARD_HOST
+  config CONFIG_BOARD 
+    def_string "host"   
+  
+  choice CHOICE_CPU 
     default CPU_HOST 
-  endchoice
+  endchoice 
 
-  config BUILD_BUNDLE_COMPILER_RT
+  config CONFIG_BUILD_BUNDLE_COMPILER_RT
     default y
 endif
