@@ -24,7 +24,11 @@ const time = @cImport({
     @cInclude("pico/time.h");
 });
 
+const core = @import("cortex-m0plus");
+
 pub const Time = struct {
+    pub const SysTick = core.SysTick;
+
     pub fn sleep_ms(ms: u64) void {
         time.sleep_ms(@intCast(ms));
     }

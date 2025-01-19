@@ -50,17 +50,17 @@ pub fn Mmio(comptime RegisterFieldDescription: type) type {
         }
 
         pub inline fn xor_raw(self: *volatile Self, value: u32) void {
-            var xor_alias: *RegisterFieldDescription = @ptrFromInt((@intFromPtr(self) + 0x1000));
+            var xor_alias: *Self = @ptrFromInt((@intFromPtr(self) + 0x1000));
             xor_alias.raw = value;
         }
 
         pub inline fn set_raw(self: *volatile Self, value: u32) void {
-            var set_alias: *RegisterFieldDescription = @ptrFromInt((@intFromPtr(self) + 0x2000));
+            var set_alias: *Self = @ptrFromInt((@intFromPtr(self) + 0x2000));
             set_alias.raw = value;
         }
 
         pub inline fn clear_raw(self: *volatile Self, value: u32) void {
-            var clear_alias: *RegisterFieldDescription = @ptrFromInt((@intFromPtr(self) + 0x3000));
+            var clear_alias: *Self = @ptrFromInt((@intFromPtr(self) + 0x3000));
             clear_alias.raw = value;
         }
 

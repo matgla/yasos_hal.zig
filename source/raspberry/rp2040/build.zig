@@ -64,8 +64,13 @@ pub fn build(b: *std.Build) !void {
     });
 
     const picosdk = try configureCmake(b);
-    const halInterface = b.dependency("hal_interface", .{ .optimize = optimize, .target = target });
-    hal.addImport("hal_interface", halInterface.module("hal_interface"));
+
+    const hal_interface = b.addModule("hal_interface", .{
+        .root_source_file = b.path("../../../interface/hal.zig"),
+        .optimize = optimize,
+        .target = target,
+    });
+    hal.addImport("hal_interface", hal_interface);
 
     const hal_common = b.addModule("hal_common", .{
         .root_source_file = b.path("../../common/common.zig"),
@@ -79,12 +84,19 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
     });
 
+    const cortex_m0plus = b.addModule("cortex-m0plus", .{
+        .root_source_file = b.path("../../common/cores/arm/cortex-m0plus/init.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    cortex_m0plus.addImport("arch", hal_armv6_m);
+
     hal.addImport("hal_common", hal_common);
     hal_armv6_m.addImport("hal", hal);
     hal.addImport("hal_armv6_m", hal_armv6_m);
+    hal.addImport("cortex-m0plus", cortex_m0plus);
 
     hal.addIncludePath(.{ .cwd_relative = b.pathJoin(&.{ picosdk, "generated/pico_base" }) });
-    _ = halInterface.module("hal_interface");
     _ = try toolchain.decorateModuleWithArmToolchain(b, hal);
     _ = try toolchain.decorateModuleWithArmToolchain(b, hal_common);
 
@@ -121,11 +133,12 @@ pub fn build(b: *std.Build) !void {
     hal.addIncludePath(b.path("../../../libs/pico-sdk/src/rp2_common/hardware_ticks/include"));
     hal.addIncludePath(b.path("../../../libs/pico-sdk/src/rp2_common/hardware_watchdog/include"));
     hal.addIncludePath(b.path("../../../libs/pico-sdk/src/rp2_common/hardware_xosc/include"));
+    hal.addIncludePath(b.path("../../../libs/pico-sdk/src/rp2_common/cmsis/stub/CMSIS/Core/Include"));
+    hal.addIncludePath(b.path("../../../libs/pico-sdk/src/rp2_common/cmsis/stub/CMSIS/Device/RP2040/Include"));
 
     hal.addCMacro("PICO_RP2040", "1");
     hal.addCMacro("PICO_DIVIDER_CALL_IDIV0", "0");
     hal.addCMacro("PICO_DIVIDER_CALL_LDIV0", "0");
-
     hal.addCSourceFiles(.{
         .files = &.{
             "../../../libs/pico-sdk/src/rp2_common/hardware_uart/uart.c",
@@ -150,6 +163,7 @@ pub fn build(b: *std.Build) !void {
     hal.addAssemblyFile(b.path("../../../libs/pico-sdk/src/rp2_common/pico_divider/divider_hardware.S"));
     hal.addAssemblyFile(b.path("startup/startup.S"));
 
+    cortex_m0plus.include_dirs = hal.include_dirs;
     const boot2_binary = prepare_bootloader(b);
     const boot2_module = b.createModule(
         .{ .root_source_file = boot2_binary },

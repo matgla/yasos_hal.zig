@@ -140,7 +140,6 @@ __unhandled_user_irq:
 .type _start,%function
 .thumb_func 
 _start:
-  bkpt #0
   ldr r1, =__vector_table 
   ldr r0, =(PPB_BASE + M0PLUS_VTOR_OFFSET)
   str r1, [r0]
@@ -148,4 +147,3 @@ _start:
   blx r1
   ldr r1, =main 
   blx r1 
-  bkpt #0

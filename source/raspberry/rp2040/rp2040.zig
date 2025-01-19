@@ -23,11 +23,13 @@ pub const internal = struct {
     pub const Time = @import("source/time.zig").Time;
     pub const Cpu = @import("source/cpu.zig").Cpu;
     pub const Mmio = @import("source/mmio.zig").Mmio;
+    pub const Irq = @import("cortex-m0plus").Irq;
 };
 
 pub const uart = @import("hal_interface").uart;
 pub const time = @import("hal_interface").time.Time(internal.Time).create();
 pub const cpu = @import("hal_interface").cpu.Cpu(internal.Cpu).create();
+pub const irq = @import("hal_interface").irq.Irq(internal.Irq).create();
 
 pub const mmio = struct {
     pub fn Mmio(comptime RegisterDescription: anytype) type {

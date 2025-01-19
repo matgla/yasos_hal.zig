@@ -1,5 +1,5 @@
 //
-// hal.zig
+// irq.zig
 //
 // Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
 //
@@ -18,8 +18,12 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-pub const uart = @import("uart.zig");
-pub const time = @import("time.zig");
-pub const cpu = @import("cpu.zig");
-pub const mmio = @import("mmio.zig");
-pub const irq = @import("irq.zig");
+pub const Irq = struct {
+    pub const Type = enum {
+        systick,
+        pendsv,
+        svc,
+    };
+
+    pub fn disable(_: Type) void {}
+};

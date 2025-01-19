@@ -30,9 +30,20 @@ pub const SystemControlBlock = extern struct {
     }),
 };
 
+pub const SysTick = extern struct {
+    ctrl: mmio.Mmio(u32),
+    load: mmio.Mmio(u32),
+    val: mmio.Mmio(u32),
+    calib: mmio.Mmio(u32),
+};
+
 pub const Registers = struct {
     pub const ppb_base: u32 = 0xe0000000;
     pub const scb_base: u32 = ppb_base + 0xed00;
+    pub const scs_base: u32 = ppb_base + 0xe000;
 
     pub const scb: *volatile SystemControlBlock = @ptrFromInt(scb_base);
+
+    pub const systick_base: u32 = scs_base + 0x0010;
+    pub const systick: *volatile SysTick = @ptrFromInt(systick_base);
 };

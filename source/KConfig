@@ -39,4 +39,12 @@ choice CHOICE_CPU
     rsource "**/**/KConfig"
 endchoice 
 
+config CONFIG_CPU_HAS_FPU
+    bool 
+
+config CONFIG_CPU_USE_FPU 
+    bool "Use floating point unit"
+    depends on CONFIG_CPU_HAS_FPU 
+
+
 endmenu

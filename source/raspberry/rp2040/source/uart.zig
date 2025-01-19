@@ -40,10 +40,19 @@ pub fn Uart(comptime index: usize, comptime pins: interface.uart.Pins) type {
             uart.gpio_set_function(@intCast(pins.rx.?), uart.GPIO_FUNC_UART);
         }
 
-        pub fn write(_: Self, data: []const u8) !usize {
-            uart.uart_write_blocking(Register, data.ptr, data.len);
-            uart.uart_tx_wait_blocking(Register);
+        pub fn write(self: Self, data: []const u8) !usize {
+            //@call(.never_inline, uart.uart_write_blocking, .{ Register, data.ptr, data.len });
+            const ptr: *volatile uart.uart_hw_t = uart.uart_get_hw(Register);
+            for (data) |byte| {
+                while (!self.is_writable()) {}
+                ptr.dr = byte;
+            }
             return data.len;
+        }
+
+        pub fn is_writable(_: Self) bool {
+            const ptr: *volatile uart.uart_hw_t = uart.uart_get_hw(Register);
+            return ptr.fr & uart.UART_UARTFR_TXFF_BITS == 0;
         }
 
         fn getRegisterAddress(comptime id: u32) *uart.uart_inst_t {

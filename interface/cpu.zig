@@ -24,6 +24,8 @@ pub fn Cpu(comptime cpu: anytype) type {
     const CpuImplementation = cpu;
     return struct {
         const Self = @This();
+        pub const Registers = CpuImplementation.Registers;
+
         impl: CpuImplementation,
 
         pub fn create() Self {
@@ -42,10 +44,6 @@ pub fn Cpu(comptime cpu: anytype) type {
 
         pub fn number_of_cores(_: Self) u8 {
             return CpuImplementation.number_of_cores();
-        }
-
-        pub fn regs(_: Self) type { //@TypeOf(CpuImplementation.regs) {
-            return @TypeOf(CpuImplementation.regs);
         }
     };
 }

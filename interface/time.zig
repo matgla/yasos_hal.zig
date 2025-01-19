@@ -25,10 +25,12 @@ pub fn Time(comptime time: anytype) type {
     return struct {
         const Self = @This();
         impl: TimeImplementation,
+        systick: TimeImplementation.SysTick,
 
         pub fn create() Self {
             return Self{
                 .impl = TimeImplementation{},
+                .systick = TimeImplementation.SysTick{},
             };
         }
 

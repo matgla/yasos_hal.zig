@@ -24,7 +24,7 @@ const clock = @cImport({
     @cInclude("hardware/clocks.h");
 });
 
-const registers = @import("hal_armv6_m");
+const RegistersImplementation = @import("cortex-m0plus").Registers;
 
 pub const Cpu = struct {
     pub fn name() []const u8 {
@@ -39,5 +39,5 @@ pub const Cpu = struct {
         return 2;
     }
 
-    pub const regs: registers.Registers = .{};
+    pub const Registers = RegistersImplementation;
 };

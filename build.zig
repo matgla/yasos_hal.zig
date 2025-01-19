@@ -54,7 +54,11 @@ pub fn build(b: *std.Build) !void {
     std.log.info("Used board - {s}", .{board});
 
     const builder = Builder{};
-    try builder.configureBoard(b, @as([]const u8, board), @as([]const u8, exec_name), root_file, optimize, @as([]const u8, config_file));
+    const hal = try builder.configureBoard(b, @as([]const u8, board), @as([]const u8, exec_name), root_file, optimize, @as([]const u8, config_file));
+    const hal_module = b.addModule("hal", .{
+        .root_source_file = b.path("hal_import.zig"),
+    });
+    hal_module.addImport("hal", hal);
 }
 
 fn replace_tokens(b: *std.Build, linker_script: []const u8) []u8 {
@@ -78,7 +82,7 @@ fn replace_tokens(b: *std.Build, linker_script: []const u8) []u8 {
 }
 
 pub const Builder = struct {
-    pub fn configureBoard(_: *const Builder, b: *std.Build, board: []const u8, execName: []const u8, root_file: []const u8, optimize: std.builtin.OptimizeMode, config_file: []const u8) !void {
+    pub fn configureBoard(_: *const Builder, b: *std.Build, board: []const u8, execName: []const u8, root_file: []const u8, optimize: std.builtin.OptimizeMode, config_file: []const u8) !*std.Build.Module {
         const boardDependency = try std.fmt.allocPrint(b.allocator, "boards/{s}/{s}.zig", .{ board, board });
         defer b.allocator.free(boardDependency);
 
@@ -86,7 +90,7 @@ pub const Builder = struct {
 
         if (config.cpu == null) {
             std.log.err("No CPU entry in config.json", .{});
-            return;
+            unreachable;
         }
         const halDependency = try std.fmt.allocPrint(b.allocator, "mcu/{s}", .{config.cpu.?});
         defer b.allocator.free(halDependency);
@@ -96,7 +100,6 @@ pub const Builder = struct {
             .sub_path = root_file,
             .owner = b,
         } };
-
         if (mcu.module("hal").resolved_target) |target| {
             const boardModule = b.addModule("board", .{
                 .root_source_file = b.path(boardDependency),
@@ -131,5 +134,6 @@ pub const Builder = struct {
 
             b.installArtifact(exe);
         }
+        return mcu.module("hal");
     }
 };
