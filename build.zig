@@ -21,6 +21,8 @@
 const std = @import("std");
 const buildin = @import("builtin");
 
+const toolchain = @import("toolchains").arm_none_eabi_toolchain;
+
 const Config = struct {
     cpu: ?[]const u8 = null,
     build_linker_script_path: ?[]const u8 = null,
@@ -118,6 +120,7 @@ pub const Builder = struct {
             exe.link_function_sections = true;
             exe.link_data_sections = true;
             exe.link_gc_sections = true;
+            _ = try toolchain.decorateModuleWithArmToolchain(b, &exe.root_module);
             exe.root_module.addImport("board", boardModule);
             exe.root_module.addImport("hal", mcu.module("hal"));
             if (config.build_linker_script_path) |linker_script| {

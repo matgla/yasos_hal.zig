@@ -32,6 +32,9 @@
         .hal_interface = .{
             .path = "interface",
         },
+        .toolchains = .{
+            .path = "toolchains",
+        },
     },
     .paths = .{
         "build.zig",

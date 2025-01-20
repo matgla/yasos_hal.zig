@@ -67,9 +67,18 @@ export fn _open(_: *const c_char, _: c_int) c_int {
     return 0;
 }
 
-export fn _sbrk(_: isize) *void {
-    var buf: [10]u8 = undefined;
-    return @ptrCast(buf[0..10].ptr);
+extern var end: u8;
+extern var __heap_limit__: u8;
+var heap_end: *u8 = &end;
+
+export fn _sbrk(incr: usize) *allowzero anyopaque {
+    const prev_heap_end: *u8 = heap_end;
+    const next_heap_end: *u8 = @ptrFromInt(@intFromPtr(heap_end) + incr);
+    if (@intFromPtr(next_heap_end) >= @intFromPtr(&__heap_limit__)) {
+        return @ptrFromInt(0);
+    }
+    heap_end = next_heap_end;
+    return prev_heap_end;
 }
 
 export fn hard_assertion_failure() void {
