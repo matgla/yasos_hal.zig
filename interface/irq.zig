@@ -26,8 +26,17 @@ pub fn Irq(comptime IrqImpl: anytype) type {
         pub fn create() Self {
             return Self{};
         }
+
         pub fn disable(_: Self, irq: IrqType) void {
             IrqImpl.disable(irq);
+        }
+
+        pub fn enable(_: Self, irq: IrqType) void {
+            IrqImpl.enable(irq);
+        }
+
+        pub fn set_priority(_: Self, irq: IrqType, priority: usize) void {
+            IrqImpl.set_priority(irq, priority);
         }
     };
 }
