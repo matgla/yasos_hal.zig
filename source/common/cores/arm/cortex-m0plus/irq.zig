@@ -18,12 +18,43 @@
 // <https://www.gnu.org/licenses/>.
 //
 
+const c = @cImport({
+    @cInclude("RP2040.h");
+    @cInclude("core_cm0plus.h");
+});
+
+const cpu = @import("arch").Registers;
+
 pub const Irq = struct {
     pub const Type = enum {
         systick,
         pendsv,
-        svc,
+        supervisor_call,
     };
 
     pub fn disable(_: Type) void {}
+
+    pub fn set_priority(irq: Type, priority: u32) void {
+        var irq_num: c.IRQn_Type = undefined;
+        switch (irq) {
+            .systick => irq_num = c.SysTick_IRQn,
+            .pendsv => irq_num = c.PendSV_IRQn,
+            .supervisor_call => irq_num = c.SVCall_IRQn,
+        }
+        c.NVIC_SetPriority(irq_num, priority);
+    }
+
+    pub fn trigger_supervisor_call(_: u32) callconv(.naked) void {
+        asm volatile (
+            \\ svc 0 
+            \\ bx lr
+        );
+    }
+
+    pub fn trigger(irq: Type) void {
+        switch (irq) {
+            .pendsv => cpu.scb.icsr.write_raw(cpu.scb.icsr.raw | c.SCB_ICSR_PENDSVSET_Msk),
+            else => {},
+        }
+    }
 };

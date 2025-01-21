@@ -28,6 +28,7 @@ pub const SystemControlBlock = extern struct {
         variant: u4,
         implementer: u8,
     }),
+    icsr: mmio.Mmio(u32),
 };
 
 pub const SysTick = extern struct {

@@ -38,5 +38,14 @@ pub fn Irq(comptime IrqImpl: anytype) type {
         pub fn set_priority(_: Self, irq: IrqType, priority: usize) void {
             IrqImpl.set_priority(irq, priority);
         }
+
+        pub fn trigger_supervisor_call(_: Self, number: u32) void {
+            const f: *const fn (_: u32) callconv(.c) void = @ptrCast(&IrqImpl.trigger_supervisor_call);
+            f(number);
+        }
+
+        pub fn trigger(_: Self, irq: IrqType) void {
+            IrqImpl.trigger(irq);
+        }
     };
 }
