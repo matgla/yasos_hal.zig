@@ -24,6 +24,8 @@ const c = @cImport({
     @cInclude("pico/runtime_init.h");
 });
 
+const sio = @import("../source/sio.zig").sio;
+
 extern var __data_start__: u8;
 extern var __data_end__: u8;
 extern var __data_start_flash__: u8;
@@ -70,4 +72,9 @@ export fn crt_init() void {
     initialize_libc_constructors();
 
     c.runtime_init_clocks();
+
+    // release all spinlocks
+    for (&sio.spinlocks) |*lock| {
+        lock.write(1);
+    }
 }

@@ -1,5 +1,5 @@
 //
-// cpu.zig
+// atomic.zig
 //
 // Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
 //
@@ -15,34 +15,21 @@
 //
 // You should have received a copy of the GNU General
 // Public License along with this program. If not, see
-// <https://www.gnu.org/licenses/>.
+// <https://www.gnu.org|/licenses/>.
 //
 
-const std = @import("std");
+const sio = @import("sio.zig").sio;
 
-const clock = @cImport({
-    @cInclude("hardware/clocks.h");
-});
-
-const RegistersImplementation = @import("cortex-m0plus").Registers;
-const sio_impl = @import("sio.zig").sio;
-
-pub const Cpu = struct {
-    pub fn name() []const u8 {
-        return "RP2040";
+pub const HardwareAtomic = struct {
+    pub fn lock(comptime id: u32) void {
+        if (id >= 32) @compileError("RP2040 supports only 32 hardware spinlocks");
+        // from datasheet
+        // if both cores try to lock at the same time core 0 succeeds
+        while (sio.spinlocks[id].read() == 0) {}
     }
 
-    pub fn frequency() u64 {
-        return clock.clock_get_hz(clock.clk_sys);
+    pub fn unlock(comptime id: u32) void {
+        if (id >= 32) @compileError("RP2040 supports only 32 hardware spinlocks");
+        sio.spinlocks[id].write(1);
     }
-
-    pub fn number_of_cores() u8 {
-        return 2;
-    }
-
-    pub fn coreid() u8 {
-        return @intCast(sio_impl.cpuid.read());
-    }
-
-    pub const Registers = RegistersImplementation;
 };

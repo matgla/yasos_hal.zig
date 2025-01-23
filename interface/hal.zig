@@ -23,3 +23,4 @@ pub const time = @import("time.zig");
 pub const cpu = @import("cpu.zig");
 pub const mmio = @import("mmio.zig");
 pub const irq = @import("irq.zig");
+pub const atomic = @import("atomic.zig");
