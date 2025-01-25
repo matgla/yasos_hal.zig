@@ -15,9 +15,11 @@ linker_script.ld* Based on https://github.com/ARM-software/CMSIS_5/blob/develop/
 *
 */
 
+/* TODO make this configurable via kconfig */
 MEMORY 
 {
-  flash(rx!w)     : ORIGIN = 0x10000000, LENGTH = 2048K 
+  flash(rx!w)     : ORIGIN = 0x10000000, LENGTH = 512K 
+  romfs(rx!w)     : ORIGIN = 0x10080000, LENGTH = 1536K
   ram(rxw)        : ORIGIN = 0x20000000, LENGTH = 256K
   scratch_x(rxw)  : ORIGIN = 0x20040000, LENGTH = 4K 
   scratch_y(rxw)  : ORIGIN = 0x20041000, LENGTH = 4K
@@ -89,6 +91,12 @@ SECTIONS
   } > flash 
   __exidx_end = .; 
 
+  .romfs : 
+  {
+    __romfs_start__ = .;
+    KEEP(*(.romfs))
+    __romfs_end__ = .;
+  } > romfs
  
   /* keep this at beginning of ram or align to arm alignment requirement for 
    cortex-m0plus */
