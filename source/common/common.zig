@@ -18,6 +18,4 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-comptime {
-    _ = @import("system_stubs.zig");
-}
+comptime {}
