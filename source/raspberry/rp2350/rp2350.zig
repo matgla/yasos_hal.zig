@@ -21,10 +21,24 @@
 pub const internal = struct {
     pub const Uart = @import("source/uart.zig").Uart;
     pub const Time = @import("source/time.zig").Time;
+    pub const Cpu = @import("source/cpu.zig").Cpu;
+    pub const Mmio = @import("../common/mmio.zig").Mmio;
+    pub const HardwareAtomic = @import("source/atomic.zig").HardwareAtomic;
+    pub const Irq = @import("cortex-m").Irq;
 };
 
 pub const uart = @import("hal_interface").uart;
 pub const time = @import("hal_interface").time.Time(internal.Time).create();
+pub const cpu = @import("hal_interface").cpu.Cpu(internal.Cpu).create();
+pub const irq = @import("hal_interface").irq.Irq(internal.Irq).create();
+pub const atomic = @import("hal_interface").atomic.AtomicInterface(internal.HardwareAtomic);
+pub const hw_atomic = internal.HardwareAtomic;
+
+pub const mmio = struct {
+    pub fn Mmio(comptime RegisterDescription: anytype) type {
+        return internal.Mmio(RegisterDescription);
+    }
+};
 
 comptime {
     _ = @import("startup/boot2_rom.zig");

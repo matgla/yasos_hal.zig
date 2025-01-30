@@ -120,7 +120,7 @@ pub const Builder = struct {
             exe.link_function_sections = true;
             exe.link_data_sections = true;
             exe.link_gc_sections = true;
-            _ = try toolchain.decorateModuleWithArmToolchain(b, &exe.root_module);
+            _ = try toolchain.decorateModuleWithArmToolchain(b, &exe.root_module, target);
             exe.root_module.addImport("board", boardModule);
             exe.root_module.addImport("hal", mcu.module("hal"));
             if (config.build_linker_script_path) |linker_script| {

@@ -1,5 +1,5 @@
 //
-// time.zig
+// cpu.zig
 //
 // Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
 //
@@ -20,20 +20,29 @@
 
 const std = @import("std");
 
-const time = @cImport({
-    @cInclude("pico/time.h");
+const clock = @cImport({
+    @cInclude("hardware/clocks.h");
 });
 
-const core = @import("cortex-m");
+const RegistersImplementation = @import("cortex-m33").Registers;
+const sio_impl = @import("sio.zig").sio;
 
-pub const Time = struct {
-    pub const SysTick = core.SysTick;
-
-    pub fn sleep_ms(ms: u64) void {
-        time.sleep_ms(@intCast(ms));
+pub const Cpu = struct {
+    pub fn name() []const u8 {
+        return "RP2350";
     }
 
-    pub fn sleep_us(us: u64) void {
-        time.sleep_us(@intCast(us));
+    pub fn frequency() u64 {
+        return clock.clock_get_hz(clock.clk_sys);
     }
+
+    pub fn number_of_cores() u8 {
+        return 2;
+    }
+
+    pub fn coreid() u8 {
+        return @intCast(sio_impl.cpuid.read());
+    }
+
+    pub const Registers = RegistersImplementation;
 };

@@ -97,8 +97,8 @@ pub fn build(b: *std.Build) !void {
     hal.addImport("cortex-m0plus", cortex_m0plus);
 
     hal.addIncludePath(.{ .cwd_relative = b.pathJoin(&.{ picosdk, "generated/pico_base" }) });
-    _ = try toolchain.decorateModuleWithArmToolchain(b, hal);
-    _ = try toolchain.decorateModuleWithArmToolchain(b, hal_common);
+    _ = try toolchain.decorateModuleWithArmToolchain(b, hal, target);
+    _ = try toolchain.decorateModuleWithArmToolchain(b, hal_common, target);
 
     hal.addIncludePath(b.path("../../../libs/pico-sdk/src/rp2_common/hardware_base/include"));
     hal.addIncludePath(b.path("../../../libs/pico-sdk/src/rp2040/hardware_structs/include"));

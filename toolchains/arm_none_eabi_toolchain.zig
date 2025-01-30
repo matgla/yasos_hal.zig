@@ -20,7 +20,7 @@
 
 const std = @import("std");
 
-pub fn decorateModuleWithArmToolchain(b: *std.Build, module: *std.Build.Module) ![]const u8 {
+pub fn decorateModuleWithArmToolchain(b: *std.Build, module: *std.Build.Module, target: std.Build.ResolvedTarget) ![]const u8 {
     const arm_gcc_exe = b.findProgram(&.{"arm-none-eabi-gcc"}, &.{}) catch {
         std.log.err("Can't find arm-none-eabi-gcc in system path", .{});
         unreachable;
@@ -28,7 +28,11 @@ pub fn decorateModuleWithArmToolchain(b: *std.Build, module: *std.Build.Module) 
 
     // idea from: https://github.com/haydenridd/stm32-zig-porting-guide/blob/main/03_with_zig_build/build.zig
     const gcc_arm_sysroot_path = std.mem.trim(u8, b.run(&.{ arm_gcc_exe, "-print-sysroot" }), "\r\n");
-    const gcc_arm_multidir_relative_path = std.mem.trim(u8, b.run(&.{ arm_gcc_exe, "-mcpu=cortex-m0plus", "-mfloat-abi=soft", "-print-multi-directory" }), "\r\n");
+    var cpu_name_buffer: [128]u8 = undefined;
+    @memset(cpu_name_buffer[0..], 0);
+    _ = std.mem.replace(u8, target.result.cpu.model.name, "_", "-", cpu_name_buffer[0..]);
+    const cpu_name = std.mem.sliceTo(cpu_name_buffer[0..], 0);
+    const gcc_arm_multidir_relative_path = std.mem.trim(u8, b.run(&.{ arm_gcc_exe, b.fmt("-mcpu={s}", .{cpu_name}), b.fmt("-mfloat-abi={s}", .{@tagName(target.result.floatAbi())}), "-print-multi-directory" }), "\r\n");
     const gcc_arm_version = std.mem.trim(u8, b.run(&.{ arm_gcc_exe, "-dumpversion" }), "\r\n");
     const gcc_arm_lib_path1 = b.fmt("{s}/../lib/gcc/arm-none-eabi/{s}/{s}", .{ gcc_arm_sysroot_path, gcc_arm_version, gcc_arm_multidir_relative_path });
     const gcc_arm_lib_path2 = b.fmt("{s}/lib/{s}", .{ gcc_arm_sysroot_path, gcc_arm_multidir_relative_path });

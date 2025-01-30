@@ -67,17 +67,48 @@ pub fn build(b: *std.Build) !void {
     const halInterface = b.dependency("hal_interface", .{ .optimize = optimize, .target = target });
     hal.addImport("hal_interface", halInterface.module("hal_interface"));
 
+    const raspberry_common = b.addModule("raspberry_common", .{
+        .root_source_file = b.path("../common/init.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    hal.addImport("raspberry_common", raspberry_common);
+
     const hal_common = b.addModule("hal_common", .{
         .root_source_file = b.path("../../common/common.zig"),
         .target = target,
         .optimize = optimize,
     });
+    const cmsis = b.addModule("cmsis", .{
+        .root_source_file = b.path("cmsis.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    cmsis.addIncludePath(b.path("../../../libs/pico-sdk/src/rp2_common/cmsis/stub/CMSIS/Core/Include"));
+    cmsis.addIncludePath(b.path("../../../libs/pico-sdk/src/rp2_common/cmsis/stub/CMSIS/Device/RP2350/Include"));
+    hal_common.addImport("cmsis", cmsis);
     hal.addImport("hal_common", hal_common);
+
+    const cortex_m = b.addModule("cortex-m", .{
+        .root_source_file = b.path("../../common/cores/arm/cortex-m/init.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    cortex_m.addImport("cmsis", cmsis);
+
+    const hal_armv8_m = b.addModule("hal_armv8_m", .{
+        .root_source_file = b.path("../../common/arch/arm/armv8-m/registers.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    hal_armv8_m.addImport("hal", hal);
+    cortex_m.addImport("arch", hal_armv8_m);
+    hal.addImport("cortex-m", cortex_m);
 
     hal.addIncludePath(.{ .cwd_relative = b.pathJoin(&.{ picosdk, "generated/pico_base" }) });
     _ = halInterface.module("hal_interface");
-    _ = try toolchain.decorateModuleWithArmToolchain(b, hal);
-    _ = try toolchain.decorateModuleWithArmToolchain(b, hal_common);
+    _ = try toolchain.decorateModuleWithArmToolchain(b, hal, target);
+    _ = try toolchain.decorateModuleWithArmToolchain(b, hal_common, target);
 
     hal.addIncludePath(b.path("../../../libs/pico-sdk/src/rp2_common/hardware_base/include"));
     hal.addIncludePath(b.path("../../../libs/pico-sdk/src/rp2350/hardware_structs/include"));

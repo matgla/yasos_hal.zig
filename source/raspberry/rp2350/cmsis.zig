@@ -1,6 +1,4 @@
 //
-// time.zig
-//
 // Copyright (C) 2025 Mateusz Stadnik <matgla@live.com>
 //
 // This program is free software: you can redistribute it and/or
@@ -18,22 +16,7 @@
 // <https://www.gnu.org/licenses/>.
 //
 
-const std = @import("std");
-
-const time = @cImport({
-    @cInclude("pico/time.h");
+pub const cmsis = @cImport({
+    @cInclude("RP2350.h");
+    @cInclude("core_cm33.h");
 });
-
-const core = @import("cortex-m");
-
-pub const Time = struct {
-    pub const SysTick = core.SysTick;
-
-    pub fn sleep_ms(ms: u64) void {
-        time.sleep_ms(@intCast(ms));
-    }
-
-    pub fn sleep_us(us: u64) void {
-        time.sleep_us(@intCast(us));
-    }
-};

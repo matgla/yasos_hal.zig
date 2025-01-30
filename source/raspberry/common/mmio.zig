@@ -27,7 +27,7 @@ const std = @import("std");
 pub fn Mmio(comptime RegisterFieldDescription: type) type {
     const size = @bitSizeOf(RegisterFieldDescription);
     if (size != 32) {
-        @compileError("Register must be 32-bit on RP2040!");
+        @compileError("Register must be 32-bit on RPXXXX!");
     }
 
     return extern struct {
